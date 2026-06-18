@@ -1,0 +1,433 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.nom }} | City Pharma Plus{% endblock %}
+{% block meta_description %}Achetez {{ product.nom }} chez City Pharma Plus. Produit de parapharmacie avec commande simple, livraison et assistance client au Maroc.{% endblock %}
+{% block meta_keywords %}{{ product.nom }}, {{ product.marque.nom|default:"City Pharma Plus" }}, parapharmacie, Maroc, City Pharma Plus{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/product_detail.css' %}">
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+<meta property="og:type" content="product">
+<meta property="og:title" content="{{ product.nom }} | City Pharma Plus">
+<meta property="og:description" content="{{ product.description|striptags|truncatechars:155 }}">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+<meta property="og:site_name" content="City Pharma Plus">
+
+{% if product.image %}
+<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ product.image.url }}">
+{% endif %}
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ product.nom }} | City Pharma Plus">
+<meta name="twitter:description" content="{{ product.description|striptags|truncatechars:155 }}">
+
+{% if product.image %}
+<meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ product.image.url }}">
+{% endif %}
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  "name": "{{ product.nom|escapejs }}",
+  "description": "{{ product.description|striptags|truncatechars:200|escapejs }}",
+  {% if product.image %}
+  "image": "{{ request.scheme }}://{{ request.get_host }}{{ product.image.url }}",
+  {% endif %}
+  "brand": {
+    "@type": "Brand",
+    "name": "{{ product.marque.nom|default:'City Pharma Plus'|escapejs }}"
+  },
+  "offers": {
+    "@type": "Offer",
+    "priceCurrency": "MAD",
+    "price": "{{ product.get_price }}",
+    "availability": "{% if product.stock > 0 %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}",
+    "url": "{{ request.build_absolute_uri }}"
+  }
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="product-detail-page">
+
+    <div class="product-breadcrumb">
+        <a href="{% url 'store:index' %}">Accueil</a>
+        <span>/</span>
+
+        {% if product.sous_categorie %}
+            <span>{{ product.sous_categorie.nom }}</span>
+            <span>/</span>
+        {% endif %}
+
+        <span>{{ product.nom }}</span>
+    </div>
+
+    <div class="product-detail-card">
+
+        <!-- Images produit -->
+        <div class="product-gallery">
+
+            <div class="main-image-box">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.nom }}" class="main-image" id="main-image">
+                {% else %}
+                    <img src="{% static 'image/default-product.jpg' %}" alt="{{ product.nom }}" class="main-image" id="main-image">
+                {% endif %}
+
+                {% if product.has_discount %}
+                    <span class="detail-discount-badge">
+                        -{{ product.get_discount_percentage }}%
+                    </span>
+                {% endif %}
+
+                {% if product.stock <= 0 %}
+                    <span class="out-stock-badge">
+                        Rupture de stock
+                    </span>
+                {% endif %}
+            </div>
+
+            <div class="thumbnails">
+                {% if product.image %}
+                    <button type="button" class="thumb-item active">
+                        <img src="{{ product.image.url }}" alt="{{ product.nom }}">
+                    </button>
+                {% endif %}
+
+                {% for image in product.images.all %}
+                    <button type="button" class="thumb-item">
+                        <img src="{{ image.image.url }}" alt="Image de {{ product.nom }}">
+                    </button>
+                {% endfor %}
+            </div>
+
+        </div>
+
+        <!-- Informations principales -->
+        <div class="info-section">
+
+            <div class="product-labels">
+                {% if product.marque %}
+                    <span>{{ product.marque.nom }}</span>
+                {% endif %}
+
+                {% if product.sous_categorie %}
+                    <span>{{ product.sous_categorie.nom }}</span>
+                {% endif %}
+            </div>
+
+            <h1>{{ product.nom }}</h1>
+
+            <div class="product-reassurance-line">
+                <span>Produit sélectionné</span>
+                <span>Commande sécurisée</span>
+                <span>Paiement à la livraison</span>
+            </div>
+
+            <div class="price-box">
+                {% if product.has_discount %}
+                    <div>
+                        <span class="new-price">{{ product.get_price }} DH</span>
+                        <span class="old-price">{{ product.get_old_price }} DH</span>
+                    </div>
+                    <small>Offre valable selon disponibilité du stock.</small>
+                {% else %}
+                    <span class="new-price">{{ product.get_price }} DH</span>
+                {% endif %}
+            </div>
+
+            {% if product.has_active_promotion %}
+                <div class="promo-note">
+                    Promotion active pendant une durée limitée.
+                </div>
+            {% endif %}
+
+            {% if product.stock > 0 %}
+                <div class="stock available">
+                    <i class='bx bx-check-circle'></i>
+                    <span>En stock — {{ product.stock }} disponible(s)</span>
+                </div>
+            {% else %}
+                <div class="stock unavailable">
+                    <i class='bx bx-x-circle'></i>
+                    <span>Produit actuellement indisponible</span>
+                </div>
+            {% endif %}
+
+            <div class="product-actions">
+                {% if product.stock > 0 %}
+                    <form method="POST" action="{% url 'store:add_to_cart' product.slug %}" class="cart-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.path }}">
+
+                        <div class="quantity-cart">
+                            <label for="quantity">Quantité</label>
+
+                            <div class="quantity-control">
+                                <button type="button" class="qty-btn" id="qty-minus">−</button>
+
+                                <input
+                                    type="number"
+                                    id="quantity"
+                                    name="quantity"
+                                    value="1"
+                                    min="1"
+                                    max="{{ product.stock }}"
+                                    required
+                                >
+
+                                <button type="button" class="qty-btn" id="qty-plus">+</button>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn add-cart">
+                            Ajouter au panier
+                        </button>
+                    </form>
+                {% else %}
+                    <button class="btn add-cart disabled" type="button" disabled>
+                        Produit indisponible
+                    </button>
+                {% endif %}
+
+                <a
+                    href="https://wa.me/212661440367?text=Bonjour%2C%20je%20souhaite%20avoir%20des%20informations%20sur%20{{ product.nom|urlencode }}"
+                    target="_blank"
+                    rel="noopener"
+                    class="btn whatsapp-product"
+                >
+                    Demander sur WhatsApp
+                </a>
+            </div>
+
+            <div class="service-box">
+                <div class="service-item">
+                    <i class='bx bxs-truck'></i>
+                    <div>
+                        <strong>Livraison</strong>
+                        <span>Frais affichés au panier</span>
+                    </div>
+                </div>
+
+                <div class="service-item">
+                    <i class='bx bx-money-withdraw'></i>
+                    <div>
+                        <strong>Paiement</strong>
+                        <span>Paiement à la livraison</span>
+                    </div>
+                </div>
+
+                <div class="service-item">
+                    <i class='bx bx-headphone'></i>
+                    <div>
+                        <strong>Assistance</strong>
+                        <span>Support téléphone ou WhatsApp</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Détails du produit -->
+    <div class="product-extra-section">
+
+        <div class="extra-card">
+            <h2>Présentation du produit</h2>
+
+            <div class="description-content">
+                {% if product.description %}
+                    {{ product.description|linebreaksbr }}
+                {% else %}
+                    <p>
+                        Les informations détaillées de ce produit seront ajoutées prochainement.
+                        Pour plus de détails, contactez-nous directement sur WhatsApp.
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="extra-card">
+            <h2>Détails du produit</h2>
+
+            <div class="product-specs">
+                <div class="spec-row">
+                    <span>Nom du produit</span>
+                    <strong>{{ product.nom }}</strong>
+                </div>
+
+                {% if product.marque %}
+                    <div class="spec-row">
+                        <span>Marque</span>
+                        <strong>{{ product.marque.nom }}</strong>
+                    </div>
+                {% endif %}
+
+                {% if product.sous_categorie %}
+                    <div class="spec-row">
+                        <span>Catégorie</span>
+                        <strong>{{ product.sous_categorie.nom }}</strong>
+                    </div>
+                {% endif %}
+
+                <div class="spec-row">
+                    <span>Prix</span>
+                    <strong>{{ product.get_price }} DH</strong>
+                </div>
+
+                <div class="spec-row">
+                    <span>Disponibilité</span>
+                    {% if product.stock > 0 %}
+                        <strong class="spec-stock-ok">En stock</strong>
+                    {% else %}
+                        <strong class="spec-stock-out">Rupture de stock</strong>
+                    {% endif %}
+                </div>
+
+                <div class="spec-row">
+                    <span>Livraison</span>
+                    <strong>Frais affichés au panier</strong>
+                </div>
+
+                <div class="spec-row">
+                    <span>Paiement</span>
+                    <strong>Paiement à la livraison</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="extra-card full-card">
+            <h2>Informations avant commande</h2>
+
+            <ul class="info-list">
+                <li>
+                    <i class='bx bx-check'></i>
+                    Le prix est affiché en dirham marocain.
+                </li>
+
+                <li>
+                    <i class='bx bx-check'></i>
+                    Votre commande est enregistrée directement sur notre site.
+                </li>
+
+                <li>
+                    <i class='bx bx-check'></i>
+                    Vous pouvez aussi envoyer les détails de votre commande via WhatsApp.
+                </li>
+
+                <li>
+                    <i class='bx bx-check'></i>
+                    Notre équipe peut vous contacter pour confirmer les informations de livraison.
+                </li>
+
+                <li>
+                    <i class='bx bx-info-circle'></i>
+                    Les informations produit sont données à titre indicatif. Pour une situation médicale particulière, demandez conseil à un professionnel de santé.
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+{% if related_products %}
+    <div class="related-products-section">
+        <div class="section-heading">
+            <h2>Produits de la même catégorie</h2>
+            <p>Une sélection de produits de la même catégorie qui peuvent vous intéresser.</p>
+        </div>
+
+        <div class="related-grid">
+            {% for item in related_products %}
+                <article class="related-card">
+
+                    <a href="{% url 'store:product_detail' item.slug %}" class="related-main-link">
+                        <div class="related-image-box">
+                            {% if item.image %}
+                                <img src="{{ item.image.url }}" alt="{{ item.nom }}">
+                            {% else %}
+                                <img src="{% static 'image/default-product.jpg' %}" alt="{{ item.nom }}">
+                            {% endif %}
+
+                            {% if item.has_discount %}
+                                <span class="related-discount">
+                                    -{{ item.get_discount_percentage }}%
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        {% if item.marque %}
+                            <span class="related-brand">{{ item.marque.nom }}</span>
+                        {% endif %}
+
+                        <h3>{{ item.nom }}</h3>
+
+                        <div class="related-price">
+                            <strong>{{ item.get_price }} DH</strong>
+
+                            {% if item.has_discount %}
+                                <del>{{ item.get_old_price }} DH</del>
+                            {% endif %}
+                        </div>
+                    </a>
+
+                    <a href="{% url 'store:product_detail' item.slug %}" class="related-details-btn">
+                        Voir détails
+                    </a>
+
+                </article>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endif %}
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const thumbs = document.querySelectorAll('.thumb-item img');
+    const thumbButtons = document.querySelectorAll('.thumb-item');
+    const mainImage = document.getElementById('main-image');
+
+    if (thumbs.length && mainImage) {
+        thumbs.forEach((thumb, index) => {
+            thumb.addEventListener('click', () => {
+                mainImage.src = thumb.src;
+                mainImage.alt = thumb.alt;
+
+                thumbButtons.forEach(btn => btn.classList.remove('active'));
+                thumbButtons[index].classList.add('active');
+            });
+        });
+    }
+
+    const qtyInput = document.getElementById('quantity');
+    const minusBtn = document.getElementById('qty-minus');
+    const plusBtn = document.getElementById('qty-plus');
+
+    if (qtyInput && minusBtn && plusBtn) {
+        const min = parseInt(qtyInput.min || '1');
+        const max = parseInt(qtyInput.max || '9999');
+
+        minusBtn.addEventListener('click', function () {
+            let value = parseInt(qtyInput.value || '1');
+
+            if (value > min) {
+                qtyInput.value = value - 1;
+            }
+        });
+
+        plusBtn.addEventListener('click', function () {
+            let value = parseInt(qtyInput.value || '1');
+
+            if (value < max) {
+                qtyInput.value = value + 1;
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,549 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}City Pharma Plus{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}Parapharmacie en ligne au Maroc : produits visage, corps, cheveux, bébés, solaire, compléments alimentaires et plus encore.{% endblock %}">
+    <meta name="keywords" content="{% block meta_keywords %}parapharmacie, Maroc, produits de beauté, santé, City Pharma Plus{% endblock %}">
+    <meta name="robots" content="{% block meta_robots %}index, follow{% endblock %}">
+    <link rel="canonical" href="{% block canonical_url %}{{ request.build_absolute_uri }}{% endblock %}">
+
+    <link rel="stylesheet" href="{% static 'css/pagination.css' %}">
+
+    <meta property="og:site_name" content="City Pharma Plus">
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:title" content="{% block og_title %}{% block og_title_fallback %}City Pharma Plus{% endblock %}{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Parapharmacie en ligne au Maroc avec une large sélection de produits.{% endblock %}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:image" content="{% block og_image %}{% static 'image/120.png' %}{% endblock %}">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% block twitter_title %}City Pharma Plus{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}Parapharmacie en ligne au Maroc avec une large sélection de produits.{% endblock %}">
+    <meta name="twitter:image" content="{% block twitter_image %}{% static 'image/120.png' %}{% endblock %}">
+
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/footer.css' %}">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'image/favicon/apple-touch-icon.png' %}">
+<link rel="icon" type="image/png" sizes="32x32" href="{% static 'image/favicon/favicon-32x32.png' %}">
+<link rel="icon" type="image/png" sizes="16x16" href="{% static 'image/favicon/favicon-16x16.png' %}">
+<link rel="icon" href="{% static 'image/favicon/favicon.ico' %}" type="image/x-icon">
+<link rel="manifest" href="{% static 'image/favicon/site.webmanifest' %}">
+    {% block extra_head %}{% endblock %}
+    {% block extra_css %}{% endblock %}
+    <style>
+/* ===== FORCE MOBILE BOUTIQUE FIX ===== */
+@media (max-width: 992px) {
+
+  .main-menu.active {
+    display: block !important;
+  }
+
+  .menu-item-shop.open .shop-dropdown {
+    display: block !important;
+  }
+
+  .shop-dropdown {
+    width: 100% !important;
+    padding: 10px 0 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+  }
+
+  .shop-dropdown-inner {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .category-group {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    background: #ffffff !important;
+    border: 1px solid #e2eeee !important;
+    border-radius: 16px !important;
+    overflow: hidden !important;
+  }
+
+  .category-head {
+    width: 100% !important;
+    min-height: 62px !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 44px !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding: 12px 14px !important;
+    background: #ffffff !important;
+  }
+
+  .category-main-link {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    height: auto !important;
+    min-height: 38px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    color: #123b3d !important;
+    font-size: 14px !important;
+    font-weight: 800 !important;
+    line-height: 1.35 !important;
+    text-transform: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    overflow: visible !important;
+  }
+
+  .category-main-link span,
+  .category-title {
+    display: block !important;
+    color: #123b3d !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    font-size: 14px !important;
+    font-weight: 800 !important;
+    line-height: 1.35 !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: unset !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .category-icon {
+    display: block !important;
+    width: 26px !important;
+    height: 26px !important;
+    min-width: 26px !important;
+    object-fit: contain !important;
+  }
+
+  .subcategory-toggle {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    border-radius: 14px !important;
+    border: 1px solid #d6eaea !important;
+    background: #f7fbfb !important;
+    color: #007f86 !important;
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .category-group.open .subcategory-toggle {
+    background: #036d70 !important;
+    color: #ffffff !important;
+    border-color: #036d70 !important;
+  }
+
+  .subcategory-list {
+    display: none !important;
+    width: 100% !important;
+    position: static !important;
+    padding: 6px 14px 12px !important;
+    background: #fbfdfd !important;
+    border-top: 1px solid #edf4f4 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+  }
+
+  .category-group.open .subcategory-list {
+    display: block !important;
+  }
+
+  .subcategory-list a {
+    display: block !important;
+    color: #526565 !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    padding: 10px 4px !important;
+    border-bottom: 1px solid #edf4f4 !important;
+    white-space: normal !important;
+  }
+}
+</style>
+</head>
+<body>
+
+    <!-- Top promo bar -->
+    <header class="nav-bar">
+        <span class="phon">
+            livraison gratuite sur agadir à partir de 500 dh et dès 900 dh
+        </span>
+    </header>
+
+    <!-- Search bar -->
+    <div id="top-search-bar" class="top-search-bar">
+        <form action="{% url 'store:search_products' %}" method="get" class="top-search-form">
+            <input type="text" name="q" placeholder="Rechercher un produit..." autocomplete="off">
+            <button type="submit" class="top-search-submit" aria-label="Rechercher">
+                <i class='bx bx-search'></i>
+            </button>
+            <button type="button" id="close-search" class="top-search-close" aria-label="Fermer">
+                <i class='bx bx-x'></i>
+            </button>
+        </form>
+    </div>
+
+    <!-- Main header -->
+  <section class="main-nav-wrapper">
+    <div class="main-nav-inner">
+
+        <!-- Mobile Top Bar -->
+        <div class="mobile-top">
+
+            <!-- Menu Button -->
+            <button class="menu-toggle" id="menu-toggle" type="button" aria-label="Ouvrir le menu">
+                <i class='bx bx-menu'></i>
+            </button>
+
+            <!-- Mobile Logo -->
+            <div class="logo-mobile">
+                <a href="{% url 'store:index' %}">
+                    <img src="{% static 'image/120.png' %}" alt="City Pharma Plus">
+                </a>
+            </div>
+
+            <!-- Icons -->
+            <div class="top-icons">
+
+                <!-- Cart -->
+                <a href="{% url 'store:cart' %}" class="cart-link" aria-label="Panier">
+                    <i class='bx bx-shopping-bag'></i>
+
+                    {% if cart_items_count > 0 %}
+                        <span class="cart-badge">{{ cart_items_count }}</span>
+                    {% endif %}
+                </a>
+
+                <!-- Search -->
+                <button id="open-search" class="search-toggle" type="button" aria-label="Recherche">
+                    <i class='bx bx-search'></i>
+                </button>
+
+                <!-- Account -->
+                {% if user.is_authenticated %}
+                    <a href="{% url 'accounts:profile' %}" aria-label="Mon compte" title="Mon compte">
+                        <i class='bx bxs-user'></i>
+                    </a>
+                {% else %}
+                    <a href="{% url 'accounts:login' %}" aria-label="Connexion" title="Connexion">
+                        <i class='bx bxs-user'></i>
+                    </a>
+                {% endif %}
+
+            </div>
+        </div>
+
+        <!-- Main Menu -->
+        <nav class="main-menu" id="main-nav">
+            <ul class="menu-list">
+
+                <li>
+                    <a href="{% url 'store:index' %}">Accueil</a>
+                </li>
+
+                <!-- Boutique Dropdown -->
+                <li class="menu-item menu-item-shop" id="shop-menu-item">
+
+                    <button
+                        type="button"
+                        class="menu-link shop-trigger"
+                        id="shop-trigger"
+                        aria-expanded="false"
+                    >
+                        Boutique
+                        <span class="shop-caret">▾</span>
+                    </button>
+
+                    <div class="shop-dropdown" id="shop-dropdown">
+                        <div class="shop-dropdown-inner">
+
+                            {% for item in menu_categories %}
+                                <div class="category-group">
+
+                                    <div class="category-head">
+
+                                        <a href="{% url 'store:produits_par_categorie' item.slug %}" class="category-main-link">
+                                            {% if item.image %}
+                                                <img src="{{ item.image.url }}" alt="{{ item.nom }}" class="category-icon">
+                                            {% endif %}
+
+                                            <span class="category-title">{{ item.nom }}</span>
+                                        </a>
+
+                                        <button
+                                            type="button"
+                                            class="subcategory-toggle"
+                                            aria-expanded="false"
+                                            aria-label="Afficher les sous-catégories de {{ item.nom }}"
+                                        >
+                                            +
+                                        </button>
+
+                                    </div>
+
+                                    <div class="subcategory-list">
+                                        {% for sub in item.subcategories.all %}
+                                            {% if sub.active %}
+                                                <a href="{{ sub.get_absolute_url }}">{{ sub.nom }}</a>
+                                            {% endif %}
+                                        {% empty %}
+                                            <a href="{% url 'store:produits_par_categorie' item.slug %}">
+                                                Voir tous les produits
+                                            </a>
+                                        {% endfor %}
+                                    </div>
+
+                                </div>
+                            {% empty %}
+                                <div class="category-group">
+                                    <div class="category-head">
+                                        <span class="category-main-link">
+                                            Aucune catégorie disponible
+                                        </span>
+                                    </div>
+                                </div>
+                            {% endfor %}
+
+                        </div>
+                    </div>
+
+                </li>
+
+               <li>
+
+    <a href="{% url 'marque:liste_marques' %}">Marques</a>
+</li>
+                <li>
+                    <a href="{% url 'store:liste_offres' %}">Promotions</a>
+                </li>
+
+                <li>
+                    <a href="{% url 'store:qui' %}">Qui sommes-nous</a>
+                </li>
+
+                <li>
+                    <a href="{% url 'contact' %}">Contact</a>
+                </li>
+
+            </ul>
+        </nav>
+
+    </div>
+</section>
+    <!-- Toast messages -->
+    {% if messages %}
+    <div class="toast-container">
+        {% for message in messages %}
+            <div class="toast-message {{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Services -->
+    <section class="tous">
+        <div class="servise">
+            <img src="{% static 'image/car.png' %}" alt="Livraison">
+            <span>Livraison</span>
+            <h5>Dès 299 DHS d'achat (*)</h5>
+        </div>
+
+        <div class="servise">
+            <img src="{% static 'image/pimon.png' %}" alt="Paiement">
+            <span>Paiement</span>
+            <h5>Paiement à la livraison</h5>
+        </div>
+
+        <div class="servise">
+            <img src="{% static 'image/secor.png' %}" alt="Satisfait">
+            <span>Satisfait</span>
+            <h5>Satisfait ou remboursé</h5>
+        </div>
+
+        <div class="servise">
+            <img src="{% static 'image/order.png' %}" alt="Commandes">
+            <span>Commandes</span>
+            <h5>Suivi de vos commandes</h5>
+        </div>
+    </section>
+
+    {% include 'parte/footer.html' %}
+
+    <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const openSearch = document.getElementById('open-search');
+    const closeSearch = document.getElementById('close-search');
+    const topSearchBar = document.getElementById('top-search-bar');
+    const searchInput = topSearchBar ? topSearchBar.querySelector('input[name="q"]') : null;
+
+    const menuToggle = document.getElementById('menu-toggle');
+    const mainNav = document.getElementById('main-nav');
+
+    const shopMenuItem = document.getElementById('shop-menu-item');
+    const shopTrigger = document.getElementById('shop-trigger');
+    const subcategoryToggles = document.querySelectorAll('.subcategory-toggle');
+
+    function isMobile() {
+        return window.innerWidth <= 992;
+    }
+
+    // Search
+    if (openSearch && closeSearch && topSearchBar && searchInput) {
+        openSearch.addEventListener('click', function () {
+            topSearchBar.classList.add('active');
+            setTimeout(function () {
+                searchInput.focus();
+            }, 150);
+        });
+
+        closeSearch.addEventListener('click', function () {
+            topSearchBar.classList.remove('active');
+            searchInput.value = '';
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                topSearchBar.classList.remove('active');
+            }
+        });
+    }
+
+    // Mobile menu
+    if (menuToggle && mainNav) {
+        menuToggle.addEventListener('click', function (e) {
+            e.stopPropagation();
+            mainNav.classList.toggle('active');
+
+            if (mainNav.classList.contains('active')) {
+                menuToggle.innerHTML = "<i class='bx bx-x'></i>";
+            } else {
+                menuToggle.innerHTML = "<i class='bx bx-menu'></i>";
+            }
+        });
+    }
+
+    // Boutique click for mobile/tablet
+    if (shopTrigger && shopMenuItem) {
+        shopTrigger.addEventListener('click', function (e) {
+            if (isMobile()) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const isOpen = shopMenuItem.classList.contains('open');
+                shopMenuItem.classList.toggle('open', !isOpen);
+                shopTrigger.setAttribute('aria-expanded', String(!isOpen));
+            }
+        });
+    }
+
+    // Subcategories
+    subcategoryToggles.forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const currentGroup = btn.closest('.category-group');
+            const isOpen = currentGroup.classList.contains('open');
+
+            document.querySelectorAll('.category-group.open').forEach(function (group) {
+                if (group !== currentGroup) {
+                    group.classList.remove('open');
+                    const otherBtn = group.querySelector('.subcategory-toggle');
+                    if (otherBtn) {
+                        otherBtn.textContent = '+';
+                        otherBtn.setAttribute('aria-expanded', 'false');
+                    }
+                }
+            });
+
+            currentGroup.classList.toggle('open', !isOpen);
+            btn.textContent = !isOpen ? '−' : '+';
+            btn.setAttribute('aria-expanded', String(!isOpen));
+        });
+    });
+
+    // Close when click outside
+    document.addEventListener('click', function (e) {
+        const clickedInsideNav = mainNav && mainNav.contains(e.target);
+        const clickedMenuButton = menuToggle && menuToggle.contains(e.target);
+
+        if (!clickedInsideNav && !clickedMenuButton) {
+            if (mainNav) {
+                mainNav.classList.remove('active');
+            }
+
+            if (menuToggle) {
+                menuToggle.innerHTML = "<i class='bx bx-menu'></i>";
+            }
+
+            if (shopMenuItem) {
+                shopMenuItem.classList.remove('open');
+            }
+
+            if (shopTrigger) {
+                shopTrigger.setAttribute('aria-expanded', 'false');
+            }
+
+            document.querySelectorAll('.category-group.open').forEach(function (group) {
+                group.classList.remove('open');
+                const btn = group.querySelector('.subcategory-toggle');
+                if (btn) {
+                    btn.textContent = '+';
+                    btn.setAttribute('aria-expanded', 'false');
+                }
+            });
+        }
+    });
+
+    // Reset desktop/mobile عند تغيير حجم الشاشة
+    window.addEventListener('resize', function () {
+        if (!isMobile()) {
+            if (mainNav) {
+                mainNav.classList.remove('active');
+            }
+
+            if (menuToggle) {
+                menuToggle.innerHTML = "<i class='bx bx-menu'></i>";
+            }
+        }
+    });
+
+    // Toast
+    setTimeout(function () {
+        document.querySelectorAll('.toast-message').forEach(function (el) {
+            el.classList.add('hide');
+            setTimeout(function () {
+                el.remove();
+            }, 400);
+        });
+    }, 2500);
+});
+</script>
+
+
+</body>
+</html>

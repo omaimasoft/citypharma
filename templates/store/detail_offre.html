@@ -1,0 +1,257 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ offre.nom }} | Offre Spéciale | City Pharma Plus{% endblock %}
+
+{% block meta_description %}
+Découvrez l'offre spéciale {{ offre.nom }} chez City Pharma Plus. Promotion limitée sur des produits de parapharmacie, soins, beauté, santé et bien-être.
+{% endblock %}
+
+{% block meta_keywords %}
+{{ offre.nom }}, offre spéciale, promotion parapharmacie, City Pharma Plus, Maroc
+{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/offres.css' %}">
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+<meta property="og:type" content="product">
+<meta property="og:title" content="{{ offre.nom }} | City Pharma Plus">
+<meta property="og:description" content="{{ offre.description|striptags|truncatechars:155 }}">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+<meta property="og:site_name" content="City Pharma Plus">
+
+{% if offre.image %}
+<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ offre.image.url }}">
+{% endif %}
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ offre.nom }} | City Pharma Plus">
+<meta name="twitter:description" content="{{ offre.description|striptags|truncatechars:155 }}">
+
+{% if offre.image %}
+<meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ offre.image.url }}">
+{% endif %}
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  "name": "{{ offre.nom|escapejs }}",
+  "description": "{{ offre.description|striptags|truncatechars:200|escapejs }}",
+  {% if offre.image %}
+  "image": "{{ request.scheme }}://{{ request.get_host }}{{ offre.image.url }}",
+  {% endif %}
+  "brand": {
+    "@type": "Brand",
+    "name": "City Pharma Plus"
+  },
+  "offers": {
+    "@type": "Offer",
+    "priceCurrency": "MAD",
+    "price": "{% if offre.prix_remise %}{{ offre.prix_remise }}{% else %}{{ offre.prix_total }}{% endif %}",
+    "availability": "https://schema.org/InStock",
+    "url": "{{ request.build_absolute_uri }}"
+  }
+}
+</script>
+{% endblock %}
+
+{% block content %}
+
+<section class="offer-detail-page">
+
+    <div class="offer-breadcrumb">
+        <a href="{% url 'store:index' %}">Accueil</a>
+        <span>/</span>
+        <a href="{% url 'store:liste_offres' %}">Offres</a>
+        <span>/</span>
+        <span>{{ offre.nom }}</span>
+    </div>
+
+    <div class="offer-detail-card">
+
+        <!-- IMAGE -->
+        <div class="offer-detail-image-box">
+            {% if offre.image %}
+                <img src="{{ offre.image.url }}" alt="{{ offre.nom }}" class="offer-detail-image">
+            {% else %}
+                <img src="{% static 'image/default-product.jpg' %}" alt="{{ offre.nom }}" class="offer-detail-image">
+            {% endif %}
+
+            <span class="offer-detail-badge">
+                Offre spéciale
+            </span>
+        </div>
+
+        <!-- INFO -->
+        <div class="offer-detail-info">
+
+            <span class="offer-kicker">Promotion City Pharma Plus</span>
+
+            <h1>{{ offre.nom }}</h1>
+
+            <div class="offer-trust-line">
+                <span>Commande sécurisée</span>
+                <span>Paiement à la livraison</span>
+                <span>Offre limitée</span>
+            </div>
+
+            {% if offre.description %}
+                <div class="offer-description">
+                    <h2>Description de l’offre</h2>
+                    <p>{{ offre.description|linebreaksbr }}</p>
+                </div>
+            {% endif %}
+
+            <div class="offer-price-box">
+                {% if offre.prix_remise %}
+                    <div>
+                        <span class="offer-new-price">{{ offre.prix_remise }} DH</span>
+                        <span class="offer-old-price">{{ offre.prix_total }} DH</span>
+                    </div>
+                    <small>Prix promotionnel selon disponibilité de l’offre.</small>
+                {% else %}
+                    <span class="offer-new-price">{{ offre.prix_total }} DH</span>
+                    <small>Prix de l’offre affiché en dirham marocain.</small>
+                {% endif %}
+            </div>
+
+            {% if offre.date_expiration %}
+                <div class="offer-expire-box">
+                    Offre valable jusqu’au {{ offre.date_expiration|date:"d/m/Y H:i" }}
+                </div>
+            {% endif %}
+
+            <form method="post" action="{% url 'store:add_offer_to_cart' offre.slug %}" class="offer-cart-form">
+                {% csrf_token %}
+
+                <div class="offer-quantity-row">
+                    <label for="quantity">Quantité</label>
+
+                    <div class="offer-quantity-control">
+                        <button type="button" id="qty-minus">−</button>
+
+                        <input
+                            type="number"
+                            id="quantity"
+                            name="quantity"
+                            value="1"
+                            min="1"
+                            required
+                        >
+
+                        <button type="button" id="qty-plus">+</button>
+                    </div>
+                </div>
+
+                <div class="offer-actions">
+                    <button type="submit" class="offer-add-cart-btn">
+                        Ajouter au panier
+                    </button>
+
+                    <a href="{% url 'store:liste_offres' %}" class="offer-back-btn">
+                        ← Retour aux offres
+                    </a>
+                </div>
+            </form>
+
+            <div class="offer-service-box">
+                <div>
+                    <strong>Livraison</strong>
+                    <span>Frais affichés au panier</span>
+                </div>
+
+                <div>
+                    <strong>Paiement</strong>
+                    <span>Paiement à la livraison</span>
+                </div>
+
+                <div>
+                    <strong>Assistance</strong>
+                    <span>Support WhatsApp disponible</span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    
+
+</section>
+
+{% if offres_similaires %}
+<section class="related-offers-section">
+
+    <div class="related-offers-heading">
+        <span>Offres similaires</span>
+        <h2>Autres offres qui peuvent vous intéresser</h2>
+        <p>Découvrez aussi d’autres promotions disponibles chez City Pharma Plus.</p>
+    </div>
+
+    <div class="related-offers-grid">
+        {% for item in offres_similaires %}
+            <article class="related-offer-card">
+
+                <a href="{% url 'store:detail_offre' item.slug %}" class="related-offer-image">
+                    {% if item.image %}
+                        <img src="{{ item.image.url }}" alt="{{ item.nom }}">
+                    {% else %}
+                        <img src="{% static 'image/default-product.jpg' %}" alt="{{ item.nom }}">
+                    {% endif %}
+
+                    <span>Offre</span>
+                </a>
+
+                <div class="related-offer-info">
+                    <h3>
+                        <a href="{% url 'store:detail_offre' item.slug %}">
+                            {{ item.nom }}
+                        </a>
+                    </h3>
+
+                    <div class="related-offer-price">
+                        {% if item.prix_remise %}
+                            <strong>{{ item.prix_remise }} DH</strong>
+                            <del>{{ item.prix_total }} DH</del>
+                        {% else %}
+                            <strong>{{ item.prix_total }} DH</strong>
+                        {% endif %}
+                    </div>
+
+                    <a href="{% url 'store:detail_offre' item.slug %}" class="related-offer-btn">
+                        Voir détails
+                    </a>
+                </div>
+
+            </article>
+        {% endfor %}
+    </div>
+
+</section>
+{% endif %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const qtyInput = document.getElementById('quantity');
+    const minusBtn = document.getElementById('qty-minus');
+    const plusBtn = document.getElementById('qty-plus');
+
+    if (qtyInput && minusBtn && plusBtn) {
+        minusBtn.addEventListener('click', function () {
+            let value = parseInt(qtyInput.value || '1');
+
+            if (value > 1) {
+                qtyInput.value = value - 1;
+            }
+        });
+
+        plusBtn.addEventListener('click', function () {
+            let value = parseInt(qtyInput.value || '1');
+            qtyInput.value = value + 1;
+        });
+    }
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Commande confirmée - City Pharma Plus{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/checkout.css' %}">
+
+<section class="order-success-page">
+    <div class="order-success-card">
+
+        <div class="success-icon">
+            ✓
+        </div>
+
+        <span class="success-kicker">Commande enregistrée</span>
+
+        <h1>Merci pour votre commande</h1>
+
+        <p class="success-text">
+            Votre commande a été enregistrée avec succès. Notre équipe va la traiter dans les meilleurs délais.
+        </p>
+
+        {% if last_order %}
+            <div class="success-order-box">
+                <div>
+                    <span>Numéro de commande</span>
+                    <strong>#{{ last_order.id }}</strong>
+                </div>
+
+                <div>
+                    <span>Total à payer</span>
+                    <strong>{{ last_order.total_to_pay }} DH</strong>
+                </div>
+
+                <div>
+                    <span>Statut</span>
+                    <strong>{{ last_order.get_status_display }}</strong>
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="success-actions">
+            {% if user.is_authenticated %}
+                <a href="{% url 'accounts:my_orders' %}" class="success-btn primary">
+                    Voir mes commandes
+                </a>
+            {% endif %}
+
+            <a href="{% url 'store:index' %}" class="success-btn secondary">
+                Retour à la boutique
+            </a>
+        </div>
+
+        <p class="success-note">
+            Vous serez contacté(e) si des informations supplémentaires sont nécessaires.
+        </p>
+
+    </div>
+</section>
+{% endblock %}

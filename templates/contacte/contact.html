@@ -1,0 +1,258 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contactez-nous | City Pharma Plus{% endblock %}
+
+{% block extra_head %}
+<meta name="description" content="Contactez City Pharma Plus à Ait Melloul pour vos commandes, conseils, informations produits et demandes de livraison. Assistance rapide par téléphone, WhatsApp ou formulaire.">
+<meta name="keywords" content="City Pharma Plus, contact parapharmacie, parapharmacie Ait Melloul, WhatsApp parapharmacie, livraison produits parapharmacie">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+<meta property="og:title" content="Contactez-nous | City Pharma Plus">
+<meta property="og:description" content="Contactez City Pharma Plus par téléphone, WhatsApp ou formulaire pour toute demande d'information, commande ou livraison.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+<meta property="og:site_name" content="City Pharma Plus">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Contactez-nous | City Pharma Plus">
+<meta name="twitter:description" content="Besoin d'aide ou d'informations ? Contactez City Pharma Plus rapidement par téléphone, WhatsApp ou formulaire.">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Pharmacy",
+  "name": "City Pharma Plus",
+  "url": "{{ request.build_absolute_uri }}",
+  "telephone": "+212661440367",
+  "email": "Alkhayrinnovation@gmail.com",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Local commercial N°211, Souk Alkhayr, Av la Marche Verte, Tamazart",
+    "addressLocality": "Ait Melloul",
+    "addressCountry": "MA"
+  },
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "telephone": "+212661440367",
+    "contactType": "customer service",
+    "availableLanguage": ["fr", "ar"]
+  },
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday"
+      ],
+      "opens": "09:00",
+      "closes": "18:00"
+    }
+  ]
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/contacte.css' %}">
+
+<section class="contact-hero">
+    <div class="contact-hero-content">
+        <span class="contact-kicker">Nous sommes à votre écoute</span>
+
+        <h1>Contactez City Pharma Plus</h1>
+
+        <p>
+            Une question sur un produit, une commande ou une livraison ?
+            Notre équipe vous accompagne rapidement par téléphone, WhatsApp ou via le formulaire.
+        </p>
+
+        <div class="contact-hero-buttons">
+            <a href="tel:+212661440367" class="btn-primary">
+                Appeler maintenant
+            </a>
+
+            <a href="https://wa.me/212661440367" class="btn-secondary" target="_blank" rel="noopener">
+                Contacter sur WhatsApp
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="contact-cards">
+    <div class="contact-card">
+        <i class='bx bx-phone'></i>
+        <h3>Téléphone</h3>
+        <p>
+            <a href="tel:+212661440367">+212 661 440 367</a>
+        </p>
+    </div>
+
+    <div class="contact-card">
+        <i class='bx bxl-whatsapp'></i>
+        <h3>WhatsApp</h3>
+        <p>
+            <a href="https://wa.me/212661440367" target="_blank" rel="noopener">
+                Réponse rapide
+            </a>
+        </p>
+    </div>
+
+    <div class="contact-card">
+        <i class='bx bx-map'></i>
+        <h3>Adresse</h3>
+        <p>
+            Local commercial N°211, Souk Alkhayr, Av la Marche Verte,
+            Tamazart, Ait Melloul
+        </p>
+    </div>
+</section>
+
+<section class="contact-main">
+
+    <div class="contact-form-box">
+        <span class="contact-section-label">Formulaire</span>
+        <h2>Envoyez-nous un message</h2>
+
+        <p>
+            Remplissez le formulaire ci-dessous, nous vous répondrons dans les plus brefs délais.
+        </p>
+
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                        {{ message }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <form method="POST" class="contact-form" novalidate>
+            {% csrf_token %}
+
+            {{ form.website }}
+
+            <div class="inputBox">
+                <label for="{{ form.nom_complet.id_for_label }}">
+                    Nom complet <span>*</span>
+                </label>
+                {{ form.nom_complet }}
+
+                {% if form.nom_complet.errors %}
+                    <small class="field-error">{{ form.nom_complet.errors.0 }}</small>
+                {% endif %}
+            </div>
+
+            <div class="inputBox">
+                <label for="{{ form.telephone.id_for_label }}">
+                    Téléphone <span>*</span>
+                </label>
+                {{ form.telephone }}
+
+                {% if form.telephone.errors %}
+                    <small class="field-error">{{ form.telephone.errors.0 }}</small>
+                {% endif %}
+            </div>
+
+            <div class="inputBox">
+                <label for="{{ form.message.id_for_label }}">
+                    Message <span>*</span>
+                </label>
+                {{ form.message }}
+
+                {% if form.message.errors %}
+                    <small class="field-error">{{ form.message.errors.0 }}</small>
+                {% endif %}
+            </div>
+
+            <div class="inputBox">
+                <button class="submit-btn" type="submit">
+                    Envoyer le message
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <aside class="contact-info-box">
+        <span class="contact-section-label">Coordonnées</span>
+        <h2>Nos informations</h2>
+
+        <div class="info-item">
+            <i class='bx bx-phone'></i>
+            <div>
+                <span>Téléphone</span>
+                <a href="tel:+212661440367">+212 661 440 367</a>
+            </div>
+        </div>
+
+        <div class="info-item">
+            <i class='bx bxl-whatsapp'></i>
+            <div>
+                <span>WhatsApp</span>
+                <a href="https://wa.me/212661440367" target="_blank" rel="noopener">
+                    Envoyer un message
+                </a>
+            </div>
+        </div>
+
+        <div class="info-item">
+            <i class='bx bx-envelope'></i>
+            <div>
+                <span>Email</span>
+                <a href="mailto:Alkhayrinnovation@gmail.com">
+                    Alkhayrinnovation@gmail.com
+                </a>
+            </div>
+        </div>
+
+        <div class="info-item">
+            <i class='bx bx-map'></i>
+            <div>
+                <span>Adresse</span>
+                <p>
+                    Local commercial N°211, Souk Alkhayr,
+                    Av la Marche Verte, Tamazart, Ait Melloul
+                </p>
+            </div>
+        </div>
+
+        <div class="info-item">
+            <i class='bx bx-time-five'></i>
+            <div>
+                <span>Horaires</span>
+                <p>Lundi - Samedi : 09h00 à 18h00</p>
+            </div>
+        </div>
+
+        <div class="contact-note">
+            <strong>Besoin d’une réponse rapide ?</strong>
+            <p>Pour les commandes urgentes, contactez-nous directement sur WhatsApp.</p>
+        </div>
+    </aside>
+
+</section>
+
+<section class="contact-map-section">
+    <div class="contact-map-header">
+        <h2>Notre localisation</h2>
+        <p>Retrouvez City Pharma Plus à Ait Melloul.</p>
+    </div>
+
+    <div class="contact-map-box">
+        <iframe
+            title="Localisation City Pharma Plus à Ait Melloul"
+            src="https://www.google.com/maps?q=Local%20commercial%20N%C2%B0211%2C%20Souk%20Alkhayr%2C%20Av%20la%20Marche%20Verte%2C%20Tamazart%2C%20Ait%20Melloul%2C%20Morocco&output=embed"
+            style="border:0;"
+            allowfullscreen
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Connexion - parapharmaceutiques{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+
+<div class="login-container">
+    <h2>Se connecter</h2>
+
+    <form method="post" class="login-form">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <ul class="errorlist">
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <label for="id_username">Identifiant ou e-mail :</label>
+        {{ form.username }}
+        {{ form.username.errors }}
+
+        <label for="id_password">Mot de passe :</label>
+        {{ form.password }}
+        {{ form.password.errors }}
+
+        <input type="submit" value="Se connecter">
+    </form>
+<p class="auth-link">
+    <a href="{% url 'accounts:forgot_password' %}">
+        Mot de passe oublié ?
+    </a>
+</p>
+    <p class="auth-link">
+        Vous n'avez pas de compte ?
+        <a href="{% url 'accounts:register' %}">Créer un compte</a>
+    </p>
+</div>
+{% endblock %}
+

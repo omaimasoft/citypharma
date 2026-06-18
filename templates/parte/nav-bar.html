@@ -1,0 +1,387 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Accueil - Alkayre{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="hero-section">
+  <div class="imo">
+    <div class="hero-slide active"></div>
+    <div class="hero-slide"></div>
+    <div class="hero-slide"></div>
+
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+      <span class="hero-badge">Parapharmacie en ligne</span>
+      <h1>Votre bien-être au quotidien</h1>
+      <p>
+        Découvrez une large sélection de produits parapharmaceutiques,
+        soins, compléments alimentaires et articles de santé naturelle.
+      </p>
+      <div class="hero-buttons">
+        <a href="#futur" class="btn btn-primary">Voir les catégories</a>
+        <a href="#about" class="btn btn-outline">Qui sommes-nous ?</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="categories-section">
+  <div class="section-heading choi">
+    <h1><span>Nos</span> catégories</h1>
+    <p>Choisissez la catégorie qui vous intéresse</p>
+  </div>
+
+  <div id="futur" class="categories-grid">
+    <div class="fu_box">
+      <a href="{% url 'store:produits_par_categorie' 'Hygiène corporelle' %}">
+        <img src="{% static 'image/2.png' %}" alt="Hygiène corporelle">
+        <p>Hygiène corporelle</p>
+      </a>
+    </div>
+
+    <div class="fu_box">
+      <a href="{% url 'store:produits_par_categorie' 'S' %}">
+        <img src="{% static 'image/14.png' %}" alt="Soins solaires">
+        <p>Soins solaires</p>
+      </a>
+    </div>
+
+    <div class="fu_box">
+      <a href="{% url 'store:produits_par_categorie' 'M' %}">
+        <img src="{% static 'image/32.png' %}" alt="Hygiène des mains">
+        <p>Hygiène des mains</p>
+      </a>
+    </div>
+
+    <div class="fu_box">
+      <a href="{% url 'store:produits_par_categorie' 'B' %}">
+        <img src="{% static 'image/33.png' %}" alt="Bébés">
+        <p>Bébés</p>
+      </a>
+    </div>
+
+    <div class="fu_box">
+      <a href="{% url 'store:produits_par_categorie' 'C' %}">
+        <img src="{% static 'image/6.png' %}" alt="Soins du Corps">
+        <p>Soins du Corps</p>
+      </a>
+    </div>
+
+    <div class="fu_box">
+      <a href="{% url 'store:produits_par_categorie' 'A' %}">
+        <img src="{% static 'image/31.png' %}" alt="Compléments alimentaires">
+        <p>Compléments alimentaires</p>
+      </a>
+    </div>
+
+    <div class="fu_box">
+      <a href="{% url 'store:produits_par_categorie' 'CH' %}">
+        <img src="{% static 'image/22.png' %}" alt="Cheveux">
+        <p>Cheveux</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section id="about" class="about-section">
+  <div class="homme">
+    <div class="homme-cont">
+      <span class="section-mini-title">Qui sommes-nous ?</span>
+      <h2>Alkayre Inovalons</h2>
+      <p>
+        Alkayre Inovalons est une boutique en ligne spécialisée dans les produits
+        parapharmaceutiques de qualité : soins, compléments alimentaires et articles
+        de santé naturelle, à des prix abordables et avec un service fiable.
+        Nous facilitons votre bien-être au quotidien.
+      </p>
+      <div class="btn-box">
+        <a href="#" class="btn btn-primary">Apprendre encore plus</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="promo-section">
+  <div class="section-heading pr">
+    <h1><span>Nos</span> promotions</h1>
+    <p>Profitez de nos meilleures offres du moment</p>
+  </div>
+
+  <div class="too">
+    <article class="proo">
+      <img src="{% static 'image/98.png' %}" alt="Produit promotion 1">
+      <div class="desl">
+        <span class="product-category">Parapharmacie</span>
+        <h5>Produit Promotion 1</h5>
+        <div class="star">
+          <i class='bx bxs-star'></i>
+          <i class='bx bxs-star'></i>
+          <i class='bx bxs-star'></i>
+          <i class='bx bxs-star'></i>
+          <i class='bx bx-star'></i>
+        </div>
+        <h4>123 DH - 54 DH</h4>
+        <a href="#" class="btn btn-primary card-btn">Voir les détails</a>
+      </div>
+    </article>
+
+    <article class="proo">
+      <img src="{% static 'image/1.png' %}" alt="Produit promotion 2">
+      <div class="desl">
+        <span class="product-category">Parapharmacie</span>
+        <h5>Produit Promotion 2</h5>
+        <div class="star">
+          <i class='bx bxs-star'></i>
+          <i class='bx bxs-star'></i>
+          <i class='bx bxs-star'></i>
+          <i class='bx bxs-star'></i>
+          <i class='bx bx-star'></i>
+        </div>
+        <h4>123 DH - 54 DH</h4>
+        <a href="{% url 'detailles' %}" class="btn btn-primary card-btn">Voir les détails</a>
+      </div>
+    </article>
+
+    <article class="proo">
+      <img src="{% static 'image/55.png' %}" alt="Produit promotion 3">
+      <div class="desl">
+        <span class="product-category">Parapharmacie</span>
+        <h5>Produit Promotion 3</h5>
+        <div class="star">
+          <i class='bx bxs-star'></i>
+          <i class='bx bxs-star'></i>
+          <i class='bx bxs-star'></i>
+          <i class='bx bxs-star'></i>
+          <i class='bx bx-star'></i>
+        </div>
+        <h4>123 DH - 54 DH</h4>
+        <a href="#" class="btn btn-primary card-btn">Voir les détails</a>
+      </div>
+    </article>
+
+    <article class="proo">
+      <img src="{% static 'image/122.png' %}" alt="Produit promotion 4">
+      <div class="desl">
+        <span class="product-category">Parapharmacie</span>
+        <h5>Produit Promotion 4</h5>
+        <div class="star">
+          <i class='bx bxs-star'></i>
+          <i class='bx bxs-star'></i>
+          <i class='bx bxs-star'></i>
+          <i class='bx bxs-star'></i>
+          <i class='bx bx-star'></i>
+        </div>
+        <h4>123 DH - 54 DH</h4>
+        <a href="#" class="btn btn-primary card-btn">Voir les détails</a>
+      </div>
+    </article>
+
+    <article class="proo">
+      <img src="{% static 'image/100.png' %}" alt="Produit promotion 5">
+      <div class="desl">
+        <span class="product-category">Parapharmacie</span>
+        <h5>Produit Promotion 5</h5>
+        <div class="star">
+          <i class='bx bxs-star'></i>
+          <i class='bx bxs-star'></i>
+          <i class='bx bxs-star'></i>
+          <i class='bx bxs-star'></i>
+          <i class='bx bx-star'></i>
+        </div>
+        <h4>123 DH - 54 DH</h4>
+        <a href="#" class="btn btn-primary card-btn">Voir les détails</a>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="brands-section">
+  <div class="section-heading mark">
+    <h1><span>Nos</span> marques</h1>
+    <p>Des marques reconnues pour votre confiance</p>
+  </div>
+
+  <div class="brands-wrapper">
+    <div class="brands-track">
+      <img src="{% static 'image/298-brand_default_2x.webp' %}" alt="Marque 1">
+      <img src="{% static 'image/302-brand_default_2x.webp' %}" alt="Marque 2">
+      <img src="{% static 'image/nuxe.webp' %}" alt="Marque 3">
+      <img src="{% static 'image/145-brand_default_2x.webp' %}" alt="Marque 4">
+      <img src="{% static 'image/lierac.webp' %}" alt="Marque 5">
+      <img src="{% static 'image/139-brand_default_2x.webp' %}" alt="Marque 6">
+      <img src="{% static 'image/284-brand_default_2x.webp' %}" alt="Marque 7">
+      <img src="{% static 'image/237-brand_default_2x.webp' %}" alt="Marque 8">
+      <img src="{% static 'image/147-brand_default_2x.webp' %}" alt="Marque 9">
+      <img src="{% static 'image/231-brand_default_2x.webp' %}" alt="Marque 10">
+
+      <img src="{% static 'image/298-brand_default_2x.webp' %}" alt="Marque 1">
+      <img src="{% static 'image/302-brand_default_2x.webp' %}" alt="Marque 2">
+      <img src="{% static 'image/nuxe.webp' %}" alt="Marque 3">
+      <img src="{% static 'image/145-brand_default_2x.webp' %}" alt="Marque 4">
+      <img src="{% static 'image/lierac.webp' %}" alt="Marque 5">
+      <img src="{% static 'image/139-brand_default_2x.webp' %}" alt="Marque 6">
+      <img src="{% static 'image/284-brand_default_2x.webp' %}" alt="Marque 7">
+      <img src="{% static 'image/237-brand_default_2x.webp' %}" alt="Marque 8">
+      <img src="{% static 'image/147-brand_default_2x.webp' %}" alt="Marque 9">
+      <img src="{% static 'image/231-brand_default_2x.webp' %}" alt="Marque 10">
+    </div>
+  </div>
+</section>
+
+<section class="video-section">
+  <div class="video-container">
+    <h2>Regardez la vidéo de présentation</h2>
+
+    <div class="video-wrapper">
+      <video id="myVideo" class="responsive-video" controls poster="{% static 'image/imghom.png' %}">
+        <source src="{% static 'videos/demo.mp4' %}" type="video/mp4">
+        Votre navigateur ne supporte pas la vidéo.
+      </video>
+
+      <button class="play-button" id="playBtn" type="button">▶ Lire la vidéo</button>
+    </div>
+  </div>
+</section>
+
+<section class="stats-section">
+  <div class="counters">
+    <div>
+      <div class="counter">
+        <h3><span data-count="160">0</span>+</h3>
+        <p>Produits disponibles</p>
+      </div>
+
+      <div class="counter">
+        <h3><span data-count="200">0</span>+</h3>
+        <p>Clients satisfaits</p>
+      </div>
+
+      <div class="counter">
+        <h3><span data-count="20">0</span>+</h3>
+        <p>Marques partenaires</p>
+      </div>
+
+      <div class="counter">
+        <h3><span data-count="50">0</span>+</h3>
+        <p>Offres spéciales</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  /* =====================
+     HERO SLIDER
+  ===================== */
+  const slides = document.querySelectorAll(".hero-slide");
+  let currentSlide = 0;
+
+  if (slides.length > 0) {
+    setInterval(() => {
+      slides[currentSlide].classList.remove("active");
+      currentSlide = (currentSlide + 1) % slides.length;
+      slides[currentSlide].classList.add("active");
+    }, 4000);
+  }
+
+  /* =====================
+     VIDEO BUTTON
+  ===================== */
+  const video = document.getElementById("myVideo");
+  const playBtn = document.getElementById("playBtn");
+
+  if (playBtn && video) {
+    playBtn.addEventListener("click", function () {
+      video.play();
+      playBtn.style.display = "none";
+    });
+
+    video.addEventListener("play", function () {
+      playBtn.style.display = "none";
+    });
+
+    video.addEventListener("pause", function () {
+      if (!video.ended) {
+        playBtn.style.display = "inline-flex";
+      }
+    });
+
+    video.addEventListener("ended", function () {
+      playBtn.style.display = "inline-flex";
+    });
+  }
+
+  /* =====================
+     COUNTERS
+  ===================== */
+  const counters = document.querySelectorAll(".counter span");
+  let countersStarted = false;
+
+  function startCounting() {
+    counters.forEach(counter => {
+      const target = +counter.getAttribute("data-count");
+      let count = 0;
+      const increment = Math.max(1, Math.ceil(target / 100));
+
+      function updateCount() {
+        count += increment;
+        if (count < target) {
+          counter.textContent = count;
+          requestAnimationFrame(updateCount);
+        } else {
+          counter.textContent = target;
+        }
+      }
+
+      updateCount();
+    });
+  }
+
+  const countersSection = document.querySelector(".counters");
+  if (countersSection) {
+    const countersObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !countersStarted) {
+          startCounting();
+          countersStarted = true;
+          countersObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.3 });
+
+    countersObserver.observe(countersSection);
+  }
+
+  /* =====================
+     CATEGORIES ANIMATION
+  ===================== */
+  const boxes = document.querySelectorAll("#futur .fu_box");
+  const categoriesSection = document.querySelector("#futur");
+
+  if (categoriesSection && boxes.length > 0) {
+    const categoriesObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          boxes.forEach((box, index) => {
+            setTimeout(() => {
+              box.classList.add("show");
+            }, index * 180);
+          });
+          categoriesObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.2 });
+
+    categoriesObserver.observe(categoriesSection);
+  }
+});
+</script>
+{% endblock %}

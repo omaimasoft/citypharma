@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="pack-detail">
+    <h1>{{ pack.nom }}</h1>
+    <img src="{{ pack.image.url }}" alt="{{ pack.nom }}" style="max-width: 400px;">
+    <p>{{ pack.description }}</p>
+    <strong>Prix : {{ pack.prix_total }} DH</strong><br>
+    {% if pack.date_expiration %}
+        <p>Offre valable jusqu’au : {{ pack.date_expiration|date:"d/m/Y H:i" }}</p>
+        {% if pack.image %}
+   <img src="{{ pack.image.url }}" alt="{{ pack.nom }}">
+{% else %}
+   <p style="color:red;">Pas d'image</p>
+{% endif %}
+
+    {% endif %}
+</div>
+{% endblock %}

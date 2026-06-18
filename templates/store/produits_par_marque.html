@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ marque.nom }} | City Pharma Plus{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/produits.css' %}">
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
+{% endblock %}
+
+{% block content %}
+
+<section class="category-hero"
+    {% if marque.image %}
+        style="background-image: url('{{ marque.image.url }}');"
+    {% else %}
+        style="background-image: url('{% static 'image/default-category.jpg' %}');"
+    {% endif %}
+>
+    <div class="category-overlay"></div>
+
+    <div class="category-content">
+        <h1>
+            <span class="back-arrow">←</span>
+            {{ marque.nom }}
+        </h1>
+
+        {% if marque.description %}
+            <p class="brand-description">
+                {{ marque.description }}
+            </p>
+        {% endif %}
+    </div>
+</section>
+
+<div class="category-page-shell">
+
+    <section class="products-section">
+
+        <div class="products-head">
+            <div>
+                <h2>Produits {{ marque.nom }}</h2>
+                <p>Tous les produits disponibles actuellement pour cette marque.</p>
+            </div>
+        </div>
+
+        <div class="product-grid">
+            {% for produit in produits %}
+                <article class="product-card">
+
+                    <a href="{% url 'store:product_detail' produit.slug %}" class="product-img">
+                        {% if produit.image %}
+                            <img src="{{ produit.image.url }}" alt="{{ produit.nom }}">
+                        {% else %}
+                            <img src="{% static 'image/default-product.jpg' %}" alt="{{ produit.nom }}">
+                        {% endif %}
+
+                        {% if produit.has_discount %}
+                            <span class="discount-badge">
+                                -{{ produit.get_discount_percentage }}%
+                            </span>
+                        {% endif %}
+
+                        {% if produit.stock <= 0 %}
+                            <span class="stock-badge">
+                                Rupture
+                            </span>
+                        {% endif %}
+                    </a>
+
+                    <div class="product-info">
+
+                        {% if produit.marque %}
+                            <span class="product-brand">
+                                {{ produit.marque.nom }}
+                            </span>
+                        {% endif %}
+
+                        <h3>
+                            <a href="{% url 'store:product_detail' produit.slug %}">
+                                {{ produit.nom }}
+                            </a>
+                        </h3>
+
+                        <div class="product-price">
+                            {% if produit.has_discount %}
+                                <strong>{{ produit.get_price }} DH</strong>
+                                <span>{{ produit.get_old_price }} DH</span>
+                            {% else %}
+                                <strong>{{ produit.get_price }} DH</strong>
+                            {% endif %}
+                        </div>
+
+                        <a href="{% url 'store:product_detail' produit.slug %}" class="product-btn">
+                            Voir détails
+                        </a>
+
+                    </div>
+
+                </article>
+            {% empty %}
+                <p class="empty-products">
+                    Aucun produit disponible actuellement pour cette marque.
+                </p>
+            {% endfor %}
+        </div>
+
+
+    </section>
+{% include "store/includes/pagination.html" %}
+
+</div>
+
+{% endblock %}

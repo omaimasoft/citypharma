@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mes commandes - City Pharma Plus{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+
+<section class="orders-page">
+    <div class="orders-container">
+
+        <div class="orders-header">
+            <div>
+                <span class="account-kicker">Historique</span>
+                <h1>Mes commandes</h1>
+                <p>Consultez l’état de vos commandes et leurs détails.</p>
+            </div>
+
+            <a href="{% url 'accounts:profile' %}" class="small-account-link">
+                ← Retour à mon compte
+            </a>
+        </div>
+
+        {% if orders %}
+            <div class="orders-list">
+                {% for order in orders %}
+                    <article class="order-card">
+                        <div class="order-card-top">
+                            <div>
+                                <h3>Commande #{{ order.id }}</h3>
+                                <p>{{ order.created_at|date:"d/m/Y H:i" }}</p>
+                            </div>
+
+                            <span class="order-status status-{{ order.status }}">
+                                {{ order.get_status_display }}
+                            </span>
+                        </div>
+
+                        <div class="order-info-grid">
+                            <div>
+                                <span>Total produits</span>
+                                <strong>{{ order.total_products }} DH</strong>
+                            </div>
+
+                            <div>
+                                <span>Livraison</span>
+                                <strong>{{ order.shipping_cost }} DH</strong>
+                            </div>
+
+                            <div>
+                                <span>Total à payer</span>
+                                <strong class="order-total">{{ order.total_to_pay }} DH</strong>
+                            </div>
+                        </div>
+
+                        <a href="{% url 'accounts:order_detail' order.id %}" class="order-detail-btn">
+                            Voir les détails
+                        </a>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-account-box">
+                <p>Vous n'avez pas encore passé de commande.</p>
+                <a href="{% url 'store:index' %}">Découvrir la boutique</a>
+            </div>
+        {% endif %}
+
+    </div>
+</section>
+{% endblock %}

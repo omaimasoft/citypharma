@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ sous_categorie.nom }} | City Pharma Plus{% endblock %}
+{% block meta_description %}Découvrez les produits de la sous-catégorie {{ sous_categorie.nom }} sur City Pharma Plus. Produits de parapharmacie, commande simple et livraison au Maroc.{% endblock %}
+{% block meta_keywords %}{{ sous_categorie.nom }}, parapharmacie, City Pharma Plus, produits parapharmacie Maroc{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/products_by_subcategory.css' %}">
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+<meta property="og:title" content="{{ sous_categorie.nom }} | City Pharma Plus">
+<meta property="og:description" content="Découvrez les produits disponibles dans la sous-catégorie {{ sous_categorie.nom }} sur City Pharma Plus.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+<meta property="og:site_name" content="City Pharma Plus">
+
+{% if sous_categorie.image %}
+<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ sous_categorie.image.url }}">
+{% endif %}
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ sous_categorie.nom }} | City Pharma Plus">
+<meta name="twitter:description" content="Produits de parapharmacie disponibles chez City Pharma Plus.">
+{% endblock %}
+
+{% block content %}
+<section class="subcategory-page">
+    <div class="subcategory-container">
+
+        <!-- HERO -->
+        <section class="subcategory-hero">
+            <div class="hero-media">
+                {% if sous_categorie.image %}
+                    <img src="{{ sous_categorie.image.url }}" alt="{{ sous_categorie.nom }}">
+                {% else %}
+                    <div class="hero-placeholder">
+                        {{ sous_categorie.nom|slice:":1" }}
+                    </div>
+                {% endif %}
+                <div class="hero-overlay"></div>
+            </div>
+
+            <div class="hero-content">
+                <span class="hero-kicker">
+                    {{ sous_categorie.get_parent_display }}
+                </span>
+
+                <h1>{{ sous_categorie.nom }}</h1>
+
+                <p>
+                    Découvrez notre sélection de produits disponibles dans cette sous-catégorie.
+                    Commande simple, paiement à la livraison et assistance par WhatsApp.
+                </p>
+
+                <div class="hero-meta">
+                    <span class="hero-count">
+                        {{ produits.paginator.count }} produit{{ produits.paginator.count|pluralize }}
+                    </span>
+
+                    <a href="{% url 'store:produits_par_categorie' sous_categorie.parent %}" class="hero-back-btn">
+                        ← Retour à {{ sous_categorie.get_parent_display }}
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- AUTRES SOUS-CATEGORIES -->
+        {% if sibling_subcategories %}
+            <section class="subcategory-nav-section">
+                <div class="section-title-row">
+                    <h2>Autres sous-catégories</h2>
+                    <p>Explorez les autres choix disponibles dans la même catégorie.</p>
+                </div>
+
+                <div class="subcategory-chips">
+                    {% for sub in sibling_subcategories %}
+                        <a href="{{ sub.get_absolute_url }}"
+                           class="subcategory-chip {% if sub.id == sous_categorie.id %}active{% endif %}">
+                            {{ sub.nom }}
+                        </a>
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
+
+        <!-- PRODUCTS -->
+        <section class="products-section">
+            {% if produits %}
+                <div class="products-toolbar">
+                    <div>
+                        <span class="toolbar-kicker">Catalogue</span>
+                        <h2>Produits disponibles</h2>
+                    </div>
+
+                    <span class="page-count">
+                        Page {{ produits.number }} / {{ produits.paginator.num_pages }}
+                    </span>
+                </div>
+
+                <div class="products-grid">
+                    {% for product in produits %}
+                        <article class="product-card">
+
+                            <a href="{% url 'store:product_detail' product.slug %}" class="product-image-link">
+                                <div class="product-image">
+                                    {% if product.image %}
+                                        <img src="{{ product.image.url }}" alt="{{ product.nom }}">
+                                    {% else %}
+                                        <img src="{% static 'image/default-product.jpg' %}" alt="{{ product.nom }}">
+                                    {% endif %}
+
+                                    {% if product.has_discount %}
+                                        <span class="discount-badge">
+                                            -{{ product.get_discount_percentage }}%
+                                        </span>
+                                    {% endif %}
+
+                                    {% if product.stock <= 0 %}
+                                        <span class="stock-badge">
+                                            Rupture
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </a>
+
+                            <div class="product-content">
+                                {% if product.marque %}
+                                    <span class="product-brand">
+                                        {{ product.marque.nom }}
+                                    </span>
+                                {% endif %}
+
+                                <h3>
+                                    <a href="{% url 'store:product_detail' product.slug %}">
+                                        {{ product.nom }}
+                                    </a>
+                                </h3>
+
+                                <div class="product-price">
+                                    {% if product.has_discount %}
+                                        <span class="new-price">{{ product.get_price }} DH</span>
+                                        <span class="old-price">{{ product.get_old_price }} DH</span>
+                                    {% else %}
+                                        <span class="new-price">{{ product.get_price }} DH</span>
+                                    {% endif %}
+                                </div>
+
+                                <div class="product-stock">
+                                    {% if product.stock > 0 %}
+                                        <span class="in-stock">
+                                            <i class='bx bx-check-circle'></i>
+                                            En stock
+                                        </span>
+                                    {% else %}
+                                        <span class="out-stock">
+                                            <i class='bx bx-x-circle'></i>
+                                            Indisponible
+                                        </span>
+                                    {% endif %}
+                                </div>
+
+                                <a href="{% url 'store:product_detail' product.slug %}" class="product-btn">
+                                    Voir détails
+                                </a>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+
+                {% if produits.has_other_pages %}
+                    <nav class="pagination">
+                        {% if produits.has_previous %}
+                            <a href="?page={{ produits.previous_page_number }}" class="page-link">←</a>
+                        {% endif %}
+
+                        {% for num in produits.paginator.page_range %}
+                            {% if produits.number == num %}
+                                <span class="page-link active">{{ num }}</span>
+                            {% elif num > produits.number|add:'-2' and num < produits.number|add:'2' %}
+                                <a href="?page={{ num }}" class="page-link">{{ num }}</a>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if produits.has_next %}
+                            <a href="?page={{ produits.next_page_number }}" class="page-link">→</a>
+                        {% endif %}
+                    </nav>
+                {% endif %}
+
+            {% else %}
+                <div class="empty-products">
+                    <div class="empty-icon">
+                        <i class='bx bx-package'></i>
+                    </div>
+
+                    <h2>Aucun produit disponible</h2>
+                    <p>Cette sous-catégorie ne contient pas encore de produits.</p>
+
+                    <a href="{% url 'store:index' %}" class="empty-btn">
+                        Retour à la boutique
+                    </a>
+                </div>
+            {% endif %}
+        </section>
+
+    </div>
+    {% include "store/includes/pagination.html" %}
+
+</section>
+{% endblock %}

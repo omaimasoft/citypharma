@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  {% if selected_sous_categorie %}
+    {{ selected_sous_categorie.nom }} | {{ categorie.nom }} | City Pharma Plus
+  {% else %}
+    {{ categorie.nom }} | City Pharma Plus
+  {% endif %}
+{% endblock %}
+
+{% block meta_description %}
+  {% if selected_sous_categorie %}
+    Découvrez les produits de la sous-catégorie {{ selected_sous_categorie.nom }} dans la catégorie {{ categorie.nom }} sur City Pharma Plus.
+  {% else %}
+    Découvrez tous les produits de la catégorie {{ categorie.nom }} sur City Pharma Plus.
+  {% endif %}
+{% endblock %}
+
+{% block meta_keywords %}
+  {{ categorie.nom }}, parapharmacie, Maroc, City Pharma Plus{% if selected_sous_categorie %}, {{ selected_sous_categorie.nom }}{% endif %}
+{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/produits.css' %}">
+<link rel="stylesheet" href="{% static 'css/pagination.css' %}">
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO CATEGORY -->
+<section class="category-hero"
+    {% if categorie.image %}
+        style="background-image: url('{{ categorie.image.url }}');"
+    {% else %}
+        style="background-image: url('{% static 'image/default-category.jpg' %}');"
+    {% endif %}
+>
+    <div class="category-overlay"></div>
+
+    <div class="category-content">
+        <h1>
+            <span class="back-arrow">←</span>
+            {% if selected_sous_categorie %}
+                {{ selected_sous_categorie.nom }}
+            {% else %}
+                {{ categorie.nom }}
+            {% endif %}
+        </h1>
+
+        {% if sous_categories %}
+            <nav class="hero-category-nav">
+                <a href="{% url 'store:produits_par_categorie' categorie.slug %}"
+                   class="{% if not selected_sous_categorie %}active{% endif %}">
+                    Tous
+                </a>
+
+                {% for sub in sous_categories %}
+                    <a href="{% url 'store:produits_par_categorie' categorie.slug %}?sub={{ sub.slug }}"
+                       class="{% if selected_sous_categorie and selected_sous_categorie.id == sub.id %}active{% endif %}">
+                        {{ sub.nom }}
+                    </a>
+                {% endfor %}
+            </nav>
+        {% endif %}
+    </div>
+</section>
+
+<!-- PAGE CONTENT -->
+<div class="category-page-shell">
+
+    <section class="products-section">
+        <div class="products-head">
+            <div>
+                <h2>
+                    {% if selected_sous_categorie %}
+                        {{ selected_sous_categorie.nom }}
+                    {% else %}
+                        Tous les produits
+                    {% endif %}
+                </h2>
+
+                <p>
+                    {% if selected_sous_categorie %}
+                        Produits liés à cette sous-catégorie.
+                    {% else %}
+                        Tous les produits disponibles dans {{ categorie.nom }}.
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+
+        <div class="product-grid">
+            {% for produit in produits %}
+                <article class="product-card">
+
+                    <a href="{% url 'store:product_detail' produit.slug %}" class="product-img">
+                        {% if produit.image %}
+                            <img src="{{ produit.image.url }}" alt="{{ produit.nom }}">
+                        {% else %}
+                            <img src="{% static 'image/default-product.jpg' %}" alt="{{ produit.nom }}">
+                        {% endif %}
+
+                        {% if produit.has_discount %}
+                            <span class="discount-badge">
+                                -{{ produit.get_discount_percentage }}%
+                            </span>
+                        {% endif %}
+
+                        {% if produit.stock <= 0 %}
+                            <span class="stock-badge">
+                                Rupture
+                            </span>
+                        {% endif %}
+                    </a>
+
+                    <div class="product-info">
+
+                        {% if produit.marque %}
+                            <span class="product-brand">
+                                {{ produit.marque.nom }}
+                            </span>
+                        {% endif %}
+
+                        <h3>
+                            <a href="{% url 'store:product_detail' produit.slug %}">
+                                {{ produit.nom }}
+                            </a>
+                        </h3>
+
+                        <div class="product-price">
+                            {% if produit.has_discount %}
+                                <strong>{{ produit.get_price }} DH</strong>
+                                <span>{{ produit.get_old_price }} DH</span>
+                            {% else %}
+                                <strong>{{ produit.get_price }} DH</strong>
+                            {% endif %}
+                        </div>
+
+                        <a href="{% url 'store:product_detail' produit.slug %}" class="product-btn">
+                            Voir détails
+                        </a>
+                    </div>
+
+                </article>
+            {% empty %}
+                <p class="empty-products">
+                    Aucun produit dans cette catégorie.
+                </p>
+            {% endfor %}
+
+        </div>
+    </section>
+{% include "store/includes/pagination.html" %}
+
+</div>
+
+{% endblock %}

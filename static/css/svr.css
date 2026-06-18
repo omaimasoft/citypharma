@@ -1,0 +1,111 @@
+.imo {
+    width: 100%;
+    height: 450px;
+    border: 2px solid silver;
+    background-image: url("../image/SVR_6.webp");
+    background-size: cover;
+    background-position: bottom;  /* هذا السطر يحدد أن الصورة تبدأ من الأسفل */
+    box-shadow: 1px 1px 12px rgb(1, 51, 51);
+    margin-top: -22px;
+}
+
+
+
+.container {
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+h1 {
+    text-align: center;
+    color: #133d35;
+    margin-bottom: 30px;
+}
+
+.intro {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 40px;
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+
+.intro .logo {
+    max-width: 150px;
+}
+
+.intro p {
+    flex: 1;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+h2 {
+    color: #133d35;
+    margin-bottom: 20px;
+}
+
+.products {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+}
+
+.product-card {
+    background: white;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.product-card img {
+    width: 250px;
+    height: 250px;
+    object-fit: contain;
+    margin-bottom: 50px;
+}
+
+.product-card h3 {
+    color: #133d35;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.product-card p {
+    color: #555;
+    font-size: 14px;
+}
+
+
+
+
+.produits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.produit-card {
+  width: 200px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 10px;
+  text-align: center;
+}
+.produit-card img {
+  max-width: 100%;
+  border-radius: 8px;
+}
+.btn {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 6px 12px;
+  background-color: #2b7a78;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+}

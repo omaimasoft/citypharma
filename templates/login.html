@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Connexion - Alkayre{% endblock %}
+
+{% block content %}
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+
+<div class="login-container">
+    <h2>Se connecter</h2>
+
+    <form method="post" class="login-form">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <ul class="errorlist">
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <label for="id_username">Identifiant ou e-mail :</label>
+        {{ form.username }}
+
+        <label for="id_password">Mot de passe :</label>
+        {{ form.password }}
+
+        <input type="submit" value="Se connecter">
+    </form>
+</div>
+{% endblock %}

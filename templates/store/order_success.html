@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Commande confirmée | City Pharma Plus{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/checkout.css' %}">
+
+<section class="order-success-page">
+    <div class="order-success-card">
+
+        <div class="success-icon">
+            ✓
+        </div>
+
+        <span class="success-kicker">Commande enregistrée</span>
+
+        <h1>Merci pour votre commande</h1>
+
+        <p class="success-text">
+            Votre commande a été enregistrée avec succès sur City Pharma Plus.
+            Notre équipe vous contactera bientôt pour confirmer les détails et organiser la livraison.
+        </p>
+
+        {% if last_order %}
+            <div class="success-order-box">
+                <div>
+                    <span>Numéro de commande</span>
+                    <strong>#{{ last_order.id }}</strong>
+                </div>
+
+                <div>
+                    <span>Nom du client</span>
+                    <strong>{{ last_order.full_name }}</strong>
+                </div>
+
+                <div>
+                    <span>Téléphone</span>
+                    <strong>{{ last_order.phone }}</strong>
+                </div>
+
+                <div>
+                    <span>Total à payer</span>
+                    <strong>{{ last_order.total_to_pay }} DH</strong>
+                </div>
+
+                <div>
+                    <span>Statut</span>
+                    <strong>{{ last_order.get_status_display }}</strong>
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="success-actions">
+            <a href="{% url 'store:index' %}" class="success-btn primary">
+                Retour à la boutique
+            </a>
+
+            <a href="{% url 'store:cart' %}" class="success-btn secondary">
+                Voir le panier
+            </a>
+        </div>
+
+        <p class="success-note">
+            Merci pour votre confiance. Paiement à la livraison disponible.
+        </p>
+
+    </div>
+</section>
+{% endblock %}

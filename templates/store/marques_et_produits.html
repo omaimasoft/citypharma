@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Toutes les marques et leurs produits{% endblock %}
+
+{% block content %}
+    <section>
+        <div class="imo">
+          <h1>Liste des marques et leurs produits</h1>
+        </div>
+    </section>
+
+{% for marque in marques %}
+  <div class="marque-section">
+    <h2>{{ marque.nom }}</h2>
+
+    {% if marque.product_set.all %}
+      <ul>
+        {% for produit in marque.product_set.all %}
+          <li>
+            <a href="{% url 'store:product_detail' produit.slug %}">{{ produit.nom }}</a>
+            - {{ produit.prix }} MAD
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>Aucun produit pour cette marque.</p>
+    {% endif %}
+  </div>
+{% endfor %}
+
+<a href="{% url 'store:index' %}">⬅ Retour à l'accueil</a>
+{% endblock %}

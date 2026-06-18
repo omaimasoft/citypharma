@@ -1,0 +1,186 @@
+
+.imo {
+    width: 100%;
+    height: 450px;
+    border: 2px solid silver;
+   /* background-image: url('../images/la_rocheposay'); /* ✅ صحيح */
+  background-image: url("/static/image/imghom.png");
+/* background-image: url("/static/image/145-brand_default_2x.webp"); */
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    box-shadow: 1px 1px 12px rgb(1, 51, 51);
+}
+
+/*css pour le span donne lr choi*/
+.choi h1{
+    text-align: center;
+    color: rgb(40, 4, 36);
+    font-size: 40px;
+    margin-top: 100px;
+    
+}
+.choi span{
+    font-size:40px;
+    color: #4cb9a3;
+    text-align: center;
+    margin-top: 100px;
+}
+.likee i{
+    font-size: 18px;
+    color: #fefcfc;
+}
+.likee a{
+    position: relative;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 39px;
+    height: 39px;
+    background: transparent;
+    border:.2rem solid   ;
+    border-radius: 50%;
+    font-size: 13px;
+    color: #122a25;
+    z-index: 1;
+    overflow: hidden;
+    text-decoration: none;
+}
+.likee a:hover::before{
+    width: 100%;
+}
+/*fffffffffffffffffffffffffffffffffffffff*/
+ h1 {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 2.5rem;
+    color: #333;
+  }
+
+  h1 span {
+    color: #29968d; /* brownish color */
+  }
+
+    .slider-container {
+      position: relative;
+      width: 1400px;
+      max-width: 1390px; /* 4 منتجات × 250px + الفواصل */
+      margin: 0 auto;
+      overflow: hidden;
+      background: rgba(75, 148, 124, 0.218);
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+  .product-slider {
+    display: flex;
+    gap: 40px;
+    padding: 50px;
+    transition: transform 0.3s ease-in-out;
+  }
+
+   .proo {
+      flex: 0 0 240px; /* عرض ثابت للمنتج */
+      background: #fff;
+      border-radius: 55px;
+      box-shadow: 0 10px 10px rgba(0,0,0,0.1);
+      padding: 15px;
+      cursor: pointer;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+     .proo img {
+      width: 150px;
+      height: 310px;
+      object-fit: cover;
+      border-radius: 130px;
+      user-select: none;
+    }
+
+  .proo:hover {
+    transform: scale(1.05);
+  }
+
+  .desl span {
+    display: inline-block;
+    font-size: 0.9rem;
+    color: #a50a0a;
+  }
+
+  .desl h5 {
+    margin: 8px 0;
+    font-size: 1.2rem;
+    color: #222;
+  }
+
+  .star {
+    margin: 8px 0;
+    color: #ffd700;
+  }
+
+  .star i {
+    font-size: 1rem;
+  }
+
+  .desl h4 {
+    margin-top: 5px;
+    font-size: 1.1rem;
+    color: #555;
+  }
+
+  /* Scrollbar styling (optional) */
+  .slider-wrapper::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  .slider-wrapper::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+  }
+  /*vidio*/
+
+
+
+
+
+  /*image clice colore*/
+#futur .fu_box  p{
+    color: #2d2d2d;
+    width: -100px;
+    font-size: 17px;
+    text-align: center;
+}
+#futur{
+    margin-left: 55px;
+    display: flex;
+    gap: 30px;
+}
+
+#futur .fu_box{
+    width: 150px;
+    height: 150px;
+    text-align: center;
+    padding: 30px  15px ;
+    border: 2px  solid #a6a6a6;
+    border-radius: 100%;
+    margin: 55px 0; 
+}
+
+#futur .fu_box:hover{
+    box-shadow: 3px 3px  3px  #299686;
+    
+}
+#futur .fu_box img{
+    height: 100px;
+    width: 100px;
+    justify-content: center;
+    border-radius:100%;
+}
+#futur p{
+  color: #545454;
+   text-align: center;
+   margin-top: 30px;
+
+}

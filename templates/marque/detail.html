@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ marque.nom }} | City Pharma Plus{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/marquelest.css' %}">
+
+<main class="brand-detail-page">
+
+    <div class="brand-container">
+
+        <div class="brand-breadcrumb">
+            <a href="{% url 'store:index' %}">Accueil</a>
+            <span>/</span>
+            <a href="{% url 'marque:liste_marques' %}">Marques</a>
+            <span>/</span>
+            <strong>{{ marque.nom }}</strong>
+        </div>
+
+        <!-- BRAND HEADER -->
+        <section class="brand-showcase">
+
+            <div class="brand-visual">
+                {% if marque.image %}
+                    <img src="{{ marque.image.url }}" alt="{{ marque.nom }}">
+                {% else %}
+                    <div class="brand-letter">{{ marque.nom|slice:":1" }}</div>
+                {% endif %}
+            </div>
+
+            <div class="brand-content">
+                <span class="brand-tag">Marque disponible</span>
+                <h1>{{ marque.nom }}</h1>
+
+                {% if marque.description %}
+                    <p>{{ marque.description }}</p>
+                {% else %}
+                    <p>
+                        Découvrez notre sélection de produits {{ marque.nom }} disponibles chez City Pharma Plus.
+                    </p>
+                {% endif %}
+
+                <div class="brand-actions">
+                    <a href="#brandProducts" class="primary-brand-btn">Voir les produits</a>
+                    <a href="{% url 'marque:liste_marques' %}" class="secondary-brand-btn">Toutes les marques</a>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- PRODUCTS -->
+        <section class="brand-products" id="brandProducts">
+
+            <div class="products-header">
+                <div>
+                    <span class="section-label">Catalogue</span>
+                    <h2>Produits {{ marque.nom }}</h2>
+                    <p>{{ produits|length }} produit(s) trouvé(s)</p>
+                </div>
+            </div>
+
+            <!-- FILTER BAR -->
+            <div class="products-filter-box">
+
+                <div class="search-box">
+                    <span>⌕</span>
+                    <input type="text" id="productSearch" placeholder="Rechercher un produit...">
+                </div>
+
+                <div class="category-chips">
+                    <button class="chip active" data-filter="all">Tous</button>
+
+                    {% for sous_categorie in sous_categories %}
+                        <button class="chip" data-filter="{{ sous_categorie.slug }}">
+                            {{ sous_categorie.nom }}
+                        </button>
+                    {% endfor %}
+                </div>
+
+                <select id="productSort" class="sort-select">
+                    <option value="default">Trier</option>
+                    <option value="price-asc">Prix croissant</option>
+                    <option value="price-desc">Prix décroissant</option>
+                    <option value="name-asc">Nom A-Z</option>
+                </select>
+
+            </div>
+
+            <div class="product-grid" id="productGrid">
+
+                {% for produit in produits %}
+                    <article class="brand-product-card"
+                             data-name="{{ produit.nom|lower }}"
+                             data-category="{% if produit.sous_categorie %}{{ produit.sous_categorie.slug }}{% else %}none{% endif %}"
+                             data-price="{% if produit.prix_remise %}{{ produit.prix_remise }}{% else %}{{ produit.prix }}{% endif %}">
+
+                        <a href="{% url 'store:product_detail' produit.slug %}" class="product-media">
+                            {% if produit.prix_remise %}
+                                <span class="promo-badge">Promo</span>
+                            {% endif %}
+
+                            {% if produit.image %}
+                                <img src="{{ produit.image.url }}" alt="{{ produit.nom }}">
+                            {% else %}
+                                <div class="no-image">Image non disponible</div>
+                            {% endif %}
+                        </a>
+
+                        <div class="product-info">
+                            {% if produit.sous_categorie %}
+                                <span class="product-subcat">{{ produit.sous_categorie.nom }}</span>
+                            {% endif %}
+
+                            <h3>
+                                <a href="{% url 'store:product_detail' produit.slug %}">
+                                    {{ produit.nom }}
+                                </a>
+                            </h3>
+
+                            <div class="product-price">
+                                {% if produit.prix_remise %}
+                                    <span class="old-price">{{ produit.prix }} DH</span>
+                                    <span class="current-price">{{ produit.prix_remise }} DH</span>
+                                {% else %}
+                                    <span class="current-price">{{ produit.prix }} DH</span>
+                                {% endif %}
+                            </div>
+
+                            <a href="{% url 'store:product_detail' produit.slug %}" class="product-btn">
+                                Voir détail
+                            </a>
+                        </div>
+
+                    </article>
+                {% empty %}
+                    <div class="empty-products">
+                        Aucun produit disponible pour cette marque.
+                    </div>
+                {% endfor %}
+
+            </div>
+
+            <div class="no-results" id="noResults">
+                Aucun produit ne correspond à votre recherche.
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+
+<script>
+    const searchInput = document.getElementById("productSearch");
+    const sortSelect = document.getElementById("productSort");
+    const chips = document.querySelectorAll(".chip");
+    const grid = document.getElementById("productGrid");
+    const noResults = document.getElementById("noResults");
+
+    let activeCategory = "all";
+
+    function getCards() {
+        return Array.from(document.querySelectorAll(".brand-product-card"));
+    }
+
+    function applyFilters() {
+        const searchValue = searchInput.value.toLowerCase().trim();
+        let visibleCount = 0;
+
+        getCards().forEach(card => {
+            const name = card.dataset.name || "";
+            const category = card.dataset.category || "";
+
+            const matchSearch = name.includes(searchValue);
+            const matchCategory = activeCategory === "all" || category === activeCategory;
+
+            if (matchSearch && matchCategory) {
+                card.style.display = "block";
+                visibleCount++;
+            } else {
+                card.style.display = "none";
+            }
+        });
+
+        noResults.style.display = visibleCount === 0 ? "block" : "none";
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener("input", applyFilters);
+    }
+
+    chips.forEach(chip => {
+        chip.addEventListener("click", function () {
+            chips.forEach(c => c.classList.remove("active"));
+            this.classList.add("active");
+            activeCategory = this.dataset.filter;
+            applyFilters();
+        });
+    });
+
+    if (sortSelect) {
+        sortSelect.addEventListener("change", function () {
+            const value = this.value;
+            const cards = getCards();
+
+            cards.sort((a, b) => {
+                const priceA = parseFloat((a.dataset.price || "0").replace(",", "."));
+                const priceB = parseFloat((b.dataset.price || "0").replace(",", "."));
+                const nameA = a.dataset.name || "";
+                const nameB = b.dataset.name || "";
+
+                if (value === "price-asc") return priceA - priceB;
+                if (value === "price-desc") return priceB - priceA;
+                if (value === "name-asc") return nameA.localeCompare(nameB);
+
+                return 0;
+            });
+
+            cards.forEach(card => grid.appendChild(card));
+        });
+    }
+</script>
+{% endblock %}

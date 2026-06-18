@@ -1,0 +1,90 @@
+{% comment %} {% extends 'base.html' %}
+{% load static %}  <!-- ✅ مهم جداً -->
+
+{% block title %}Contactez-nous - Alkayre{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static '/css/commande.css' %}">
+
+<div class="contact-section">
+    <section>
+        <div class="imo">
+        </div>
+    </section>
+    <!--.............................................image icone 6 VHEVE......................................................-->
+
+<section class="recent-products">
+  <div class="pr">
+    <h1><span>Nos</span> Produits</h1>
+  </div>
+
+  <!-- أزرار التمرير -->
+  <button class="arrow-btn arrow-left" onclick="slideRight()">&#10095;</button>
+  <button class="arrow-btn arrow-right" onclick="slideLeft()">&#10094;</button>
+
+  <div class="slider-container">
+    <div class="product-slider" id="product-slider">
+      {% for product in products %}
+        <div class="proo">
+          {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.nom }}">
+          {% else %}
+            <img src="{% static 'images/default-product.jpg' %}" alt="Image par défaut">
+          {% endif %}
+          <div class="desl">
+            {% if product.categorie %}
+              <span>{{ product.categorie.nom }}</span>
+            {% endif %}
+            <h5>{{ product.nom }}</h5>
+            <div class="star">
+              <!-- Étoiles -->
+              <i class='bx bxs-star'></i>
+              <i class='bx bxs-star'></i>
+              <i class='bx bxs-star'></i>
+              <i class='bx bx-star'></i>
+            </div>
+
+            {% if product.prix_remise %}
+              <p>
+                <span style="text-decoration: line-through; color: red;">{{ product.prix }} DH</span>
+                <span style="color: green; font-weight: bold;">{{ product.prix_remise }} DH</span>
+              </p>
+            {% else %}
+              <p>{{ product.prix }} DH</p>
+            {% endif %}
+
+            <a href="{% url 'store:product_detail' product.slug %}" class="btn">Voir Détail</a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+<script>
+  const slider = document.getElementById('product-slider');
+  const scrollStep = 260;
+
+  function getScroll() {
+    const transform = slider.style.transform;
+    const match = transform.match(/-?(\d+)/);
+    return match ? parseInt(match[1]) : 0;
+  }
+
+  function slideLeft() {
+    let scroll = getScroll() + scrollStep;
+    const maxScroll = slider.scrollWidth - slider.clientWidth;
+    if (scroll > maxScroll) scroll = maxScroll;
+    slider.style.transform = `translateX(-${scroll}px)`;
+  }
+
+  function slideRight() {
+    let scroll = getScroll() - scrollStep;
+    if (scroll < 0) scroll = 0;
+    slider.style.transform = `translateX(-${scroll}px)`;
+  }
+</script>
+
+</body>
+</html>
+  
+{% endblock %} {% endcomment %}

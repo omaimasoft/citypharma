@@ -1,0 +1,609 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Accueil - City Pharma Plus{% endblock %}
+
+{% block extra_head %}
+<meta name="description" content="City Pharma Plus, votre parapharmacie en ligne au Maroc. Découvrez nos catégories, promotions, offres spéciales, marques reconnues et produits de qualité pour votre bien-être.">
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
+<meta name="robots" content="index, follow">
+
+<meta property="og:title" content="Accueil - City Pharma Plus">
+<meta property="og:description" content="Découvrez City Pharma Plus, votre parapharmacie en ligne au Maroc : promotions, marques, produits et offres spéciales.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Accueil - City Pharma Plus">
+<meta name="twitter:description" content="Votre parapharmacie en ligne au Maroc : promotions, catégories, marques et produits de qualité.">
+{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/acceuill.css' %}">
+
+<!-- ================= HERO ================= -->
+<section class="home-hero">
+  <div class="hero-banner">
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+      <span class="hero-badge">Parapharmacie en ligne au Maroc</span>
+      <h1>Prenez soin de vous avec City Pharma Plus</h1>
+      <p>
+        Découvrez une sélection de produits de parapharmacie, de soins, d’hygiène,
+        de compléments alimentaires et de bien-être pour toute la famille.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#categories" class="hero-btn hero-btn-primary">Découvrir les catégories</a>
+        <a href="{% url 'contact' %}" class="hero-btn hero-btn-secondary">Nous contacter</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================= CATEGORIES ICONS ================= -->
+{% if home_categories %}
+<section class="home-categories-section" id="categories">
+  <div class="section-heading">
+    <h2><span>Nos</span> catégories</h2>
+    <p>Explorez les univers essentiels de notre parapharmacie.</p>
+  </div>
+
+  <div class="categories-marquee">
+    <div class="categories-track">
+
+      {% for cat in home_categories %}
+      <div class="category-box" data-category="{{ cat.slug }}">
+        <a href="{% url 'store:produits_par_categorie' cat.slug %}">
+
+          <div class="category-icon-circle">
+
+            {% if cat.slug == 'visage' or cat.label == 'Visage' %}
+              <img src="{% static 'image/vesag.png' %}" alt="{{ cat.label }}">
+
+            {% elif cat.slug == 'corps' or cat.slug == 'soins-du-corps' or cat.label == 'Corps' or cat.label == 'Soins du Corps' %}
+              <img src="{% static 'image/cor.png' %}" alt="{{ cat.label }}">
+
+            {% elif cat.slug == 'solaire' or cat.slug == 'solaires' or cat.slug == 'soins-solaires' or cat.label == 'Solaire' or cat.label == 'Solaires' or cat.label == 'Soins solaires' %}
+              <img src="{% static 'image/soler.png' %}" alt="{{ cat.label }}">
+
+            {% elif cat.slug == 'cheveux' or cat.label == 'Cheveux' %}
+              <img src="{% static 'image/cho.png' %}" alt="{{ cat.label }}">
+
+            {% elif cat.slug == 'bebe-maman' or cat.slug == 'bebes' or cat.slug == 'maman-bebe' or cat.slug == 'maman-et-bebe' or cat.label == 'Bébé Maman' or cat.label == 'Bébés' %}
+              <img src="{% static 'image/bebe.png' %}" alt="{{ cat.label }}">
+
+            {% elif cat.slug == 'dentaire' or cat.slug == 'dentaire-sante' or cat.label == 'Dentaire' or cat.label == 'Dentaire & Santé' %}
+              <img src="{% static 'image/don.png' %}" alt="{{ cat.label }}">
+
+            {% elif cat.slug == 'complements-alimentaires' or cat.slug == 'complements' or cat.label == 'Compléments Alimentaires' or cat.label == 'Compléments alimentaires' %}
+              <img src="{% static 'image/comp.png' %}" alt="{{ cat.label }}">
+
+            {% elif cat.slug == 'homme' or cat.label == 'Homme' %}
+              <img src="{% static 'image/hom.png' %}" alt="{{ cat.label }}">
+
+            {% else %}
+              <img src="{% static 'image/vesag.png' %}" alt="{{ cat.label }}">
+            {% endif %}
+
+          </div>
+
+          <p>{{ cat.label }}</p>
+        </a>
+      </div>
+      {% endfor %}
+
+
+      <!-- نفس الفئات مرة ثانية باش الحركة تبقى مستمرة بدون تقطع -->
+      {% for cat in home_categories %}
+      <div class="category-box" data-category="{{ cat.slug }}">
+        <a href="{% url 'store:produits_par_categorie' cat.slug %}">
+
+          <div class="category-icon-circle">
+
+            {% if cat.slug == 'visage' or cat.label == 'Visage' %}
+              <img src="{% static 'image/vesag.png' %}" alt="{{ cat.label }}">
+
+            {% elif cat.slug == 'corps' or cat.slug == 'soins-du-corps' or cat.label == 'Corps' or cat.label == 'Soins du Corps' %}
+              <img src="{% static 'image/cor.png' %}" alt="{{ cat.label }}">
+
+            {% elif cat.slug == 'solaire' or cat.slug == 'solaires' or cat.slug == 'soins-solaires' or cat.label == 'Solaire' or cat.label == 'Solaires' or cat.label == 'Soins solaires' %}
+              <img src="{% static 'image/soler.png' %}" alt="{{ cat.label }}">
+
+            {% elif cat.slug == 'cheveux' or cat.label == 'Cheveux' %}
+              <img src="{% static 'image/cho.png' %}" alt="{{ cat.label }}">
+
+            {% elif cat.slug == 'bebe-maman' or cat.slug == 'bebes' or cat.slug == 'maman-bebe' or cat.slug == 'maman-et-bebe' or cat.label == 'Bébé Maman' or cat.label == 'Bébés' %}
+              <img src="{% static 'image/bebe.png' %}" alt="{{ cat.label }}">
+
+            {% elif cat.slug == 'dentaire' or cat.slug == 'dentaire-sante' or cat.label == 'Dentaire' or cat.label == 'Dentaire & Santé' %}
+              <img src="{% static 'image/don.png' %}" alt="{{ cat.label }}">
+
+            {% elif cat.slug == 'complements-alimentaires' or cat.slug == 'complements' or cat.label == 'Compléments Alimentaires' or cat.label == 'Compléments alimentaires' %}
+              <img src="{% static 'image/comp.png' %}" alt="{{ cat.label }}">
+
+            {% elif cat.slug == 'homme' or cat.label == 'Homme' %}
+              <img src="{% static 'image/hom.png' %}" alt="{{ cat.label }}">
+
+            {% else %}
+              <img src="{% static 'image/vesag.png' %}" alt="{{ cat.label }}">
+            {% endif %}
+
+          </div>
+
+          <p>{{ cat.label }}</p>
+        </a>
+      </div>
+      {% endfor %}
+
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const boxes = document.querySelectorAll(".category-box");
+
+    boxes.forEach(box => {
+      const link = box.querySelector("a");
+
+      link.addEventListener("click", function () {
+        boxes.forEach(item => item.classList.remove("active"));
+
+        box.classList.add("active");
+        localStorage.setItem("activeCategory", box.dataset.category);
+      });
+    });
+
+    const activeCategory = localStorage.getItem("activeCategory");
+
+    if (activeCategory) {
+      boxes.forEach(box => {
+        if (box.dataset.category === activeCategory) {
+          box.classList.add("active");
+        }
+      });
+    }
+  });
+</script>
+{% endif %} 
+
+<!-- ================= PROMOTIONS ================= -->
+{% if promo_items %}
+<section class="home-promotions">
+  <div class="section-header">
+    <span class="section-kicker">Offres limitées</span>
+    <h2>Promotions</h2>
+    <p>Profitez de nos meilleures réductions pendant une durée limitée.</p>
+  </div>
+
+  <div class="promo-grid">
+    {% for item in promo_items %}
+    <article class="promo-card">
+      <a href="{% url 'store:product_detail' item.product.slug %}" class="promo-image-box">
+        {% if item.product.image %}
+          <img src="{{ item.product.image.url }}" alt="{{ item.product.nom }}">
+        {% else %}
+          <img src="{% static 'image/default-product.png' %}" alt="{{ item.product.nom }}">
+        {% endif %}
+
+        <span class="promo-badge">-{{ item.get_discount_percentage }}%</span>
+      </a>
+
+      <div class="promo-content">
+        {% if item.product.marque %}
+          <span class="promo-brand">{{ item.product.marque.nom }}</span>
+        {% endif %}
+
+        <h3>
+          <a href="{% url 'store:product_detail' item.product.slug %}">
+            {{ item.product.nom }}
+          </a>
+        </h3>
+
+        <div class="promo-prices">
+          <span class="old-price">{{ item.product.prix }} DH</span>
+          <span class="new-price">{{ item.promo_price }} DH</span>
+        </div>
+
+        {% if item.product.stock > 0 %}
+        <form method="post" action="{% url 'store:add_to_cart' item.product.slug %}">
+          {% csrf_token %}
+          <input type="hidden" name="quantity" value="1">
+          <button type="submit" class="promo-btn">Ajouter au panier</button>
+        </form>
+        {% else %}
+          <span class="out-stock">Rupture de stock</span>
+        {% endif %}
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+
+<!-- ================= SELECTED PRODUCTS ================= -->
+{% if home_products %}
+<section class="home-products-section selected-products-section">
+  <div class="section-heading">
+    <span class="section-kicker">Sélection</span>
+    <h2><span>Notre</span> Sélection</h2>
+    <p>Découvrez une sélection de produits choisis par City Pharma Plus.</p>
+  </div>
+
+  <div class="home-products-wrap">
+    <button class="products-arrow products-prev" type="button" aria-label="Précédent">
+      &#10094;
+    </button>
+
+    <div class="home-products-slider" id="homeProductsSlider">
+      {% for product in home_products %}
+      <article class="home-product-card">
+        <a href="{% url 'store:product_detail' product.slug %}" class="home-product-img">
+          {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.nom }}">
+          {% else %}
+            <img src="{% static 'image/default-product.jpg' %}" alt="{{ product.nom }}">
+          {% endif %}
+
+          {% if product.has_discount %}
+            <span class="promo-badge-home">-{{ product.get_discount_percentage }}%</span>
+          {% endif %}
+        </a>
+        <div class="home-product-info">
+          {% if product.marque %}
+            <p class="home-product-brand">{{ product.marque.nom }}</p>
+          {% endif %}
+
+          {% if product.categorie %}
+            <span class="home-product-cat">{{ product.categorie.nom }}</span>
+          {% endif %}
+
+          <h3>
+            <a href="{% url 'store:product_detail' product.slug %}">
+              {{ product.nom }}
+            </a>
+          </h3>
+
+          <div class="home-product-price">
+            {% if product.has_discount %}
+              <span class="new-price">{{ product.get_price }} DH</span>
+              <span class="old-price">{{ product.get_old_price }} DH</span>
+            {% else %}
+              <span class="new-price">{{ product.get_price }} DH</span>
+            {% endif %}
+          </div>
+
+          {% if product.stock > 0 %}
+            <a href="{% url 'store:product_detail' product.slug %}" class="home-product-btn">
+              Voir détail
+            </a>
+          {% else %}
+            <span class="home-product-btn out-stock-btn">
+              Rupture de stock
+            </span>
+          {% endif %}
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+
+    <button class="products-arrow products-next" type="button" aria-label="Suivant">
+      &#10095;
+    </button>
+  </div>
+</section>
+{% endif %}
+
+
+<!-- ================= OFFERS ================= -->
+
+<section class="home-offers-section">
+  <div class="section-heading">
+    <h2><span>Offres</span> Disponibles</h2>
+    <p>Profitez de nos offres spéciales et packs avantageux.</p>
+  </div>
+
+  <div class="offers-grid">
+    {% if offres %}
+      {% for offre in offres %}
+      <article class="offer-card">
+        {% if offre.image %}
+          <img src="{{ offre.image.url }}" alt="{{ offre.nom }}" class="offer-image">
+        {% endif %}
+
+        <div class="offer-info">
+          <h3>{{ offre.nom }}</h3>
+
+          {% if offre.prix_remise %}
+            <p class="offer-price">
+              <span class="promo-price">{{ offre.prix_remise }} DH</span>
+              <del>{{ offre.prix_total }} DH</del>
+            </p>
+          {% else %}
+            <p class="offer-price">
+              <span class="promo-price">{{ offre.prix_total }} DH</span>
+            </p>
+          {% endif %}
+
+          {% if offre.date_expiration %}
+            <p class="offer-expire">Expire le : {{ offre.date_expiration|date:"d/m/Y H:i" }}</p>
+          {% endif %}
+
+          <a href="{% url 'store:detail_offre' offre.slug %}" class="offer-btn">
+            Voir les détails
+          </a>
+        </div>
+
+      </article>
+      {% endfor %}
+    {% else %}
+      <div class="empty-box">
+        <p>Aucune offre disponible pour le moment.</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+
+<!-- ================= BENTO CATEGORIES ================= -->
+{% if home_categories %}
+<section class="home-bento-categories">
+  <div class="container">
+    <div class="section-head">
+      <span class="section-kicker">Nos univers</span>
+      <h2>Découvrez nos catégories</h2>
+      <p>Choisissez une catégorie principale pour découvrir toutes ses sous-catégories.</p>
+    </div>
+
+    <div class="bento-grid">
+      {% for cat in home_categories %}
+      <a href="{% url 'store:produits_par_categorie' cat.slug %}" class="bento-card card-{{ forloop.counter }}">
+        <div class="bento-image">
+          {% if cat.image %}
+            <img src="{{ cat.image.url }}" alt="{{ cat.label }}">
+          {% else %}
+            <div class="bento-placeholder">{{ cat.label|slice:":1" }}</div>
+          {% endif %}
+        </div>
+        <div class="bento-content">
+          <h3>{{ cat.label }}</h3>
+          <p>{{ cat.product_count }} produits • {{ cat.sub_count }} sous-catégories</p>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+
+<!-- ================= BRANDS ================= -->
+<section class="brands-home">
+  <div class="section-heading">
+    <h2><span>Nos</span> Marques</h2>
+    <p>Des marques reconnues pour la qualité de leurs produits.</p>
+  </div>
+
+
+  <div class="brands-marquee">
+    <div class="brands-track">
+      <img src="{% static 'image/324.webp' %}" alt="Marque">
+      <img src="{% static 'image/405-small_default.webp' %}" alt="Marque">
+      <img src="{% static 'image/téléchargement (2).png' %}" alt="Marque">
+      <img src="{% static 'image/91-small_default.webp' %}" alt="Marque">
+      <img src="{% static 'image/298-brand_default_2x.webp' %}" alt="Marque">
+      <img src="{% static 'image/302-brand_default_2x.webp' %}" alt="Marque">
+      <img src="{% static 'image/nuxe.webp' %}" alt="Marque">
+      <img src="{% static 'image/145-brand_default_2x.webp' %}" alt="Marque">
+      <img src="{% static 'image/lierac.webp' %}" alt="Marque">
+      <img src="{% static 'image/139-brand_default_2x.webp' %}" alt="Marque">
+      <img src="{% static 'image/284-brand_default_2x.webp' %}" alt="Marque">
+      <img src="{% static 'image/237-brand_default_2x.webp' %}" alt="Marque">
+      <img src="{% static 'image/147-brand_default_2x.webp' %}" alt="Marque">
+      <img src="{% static 'image/231-brand_default_2x.webp' %}" alt="Marque">
+
+      <img src="{% static 'image/324.webp' %}" alt="Marque">
+      <img src="{% static 'image/405-small_default.webp' %}" alt="Marque">
+      <img src="{% static 'image/téléchargement (2).png' %}" alt="Marque">
+      <img src="{% static 'image/91-small_default.webp' %}" alt="Marque">
+      <img src="{% static 'image/298-brand_default_2x.webp' %}" alt="Marque">
+      <img src="{% static 'image/302-brand_default_2x.webp' %}" alt="Marque">
+      <img src="{% static 'image/nuxe.webp' %}" alt="Marque">
+      <img src="{% static 'image/145-brand_default_2x.webp' %}" alt="Marque">
+      <img src="{% static 'image/lierac.webp' %}" alt="Marque">
+      <img src="{% static 'image/139-brand_default_2x.webp' %}" alt="Marque">
+      <img src="{% static 'image/284-brand_default_2x.webp' %}" alt="Marque">
+      <img src="{% static 'image/237-brand_default_2x.webp' %}" alt="Marque">
+      <img src="{% static 'image/147-brand_default_2x.webp' %}" alt="Marque">
+      <img src="{% static 'image/231-brand_default_2x.webp' %}" alt="Marque">
+    </div>
+  </div>
+</section>
+
+
+<!-- ================= ABOUT ================= -->
+<section class="about-home">
+  <div class="about-home-content">
+    <span class="about-label">Qui sommes-nous ?</span>
+    <h2>City Pharma Plus</h2>
+    <p>
+      City Pharma Plus est une parapharmacie en ligne dédiée à votre bien-être.
+      Nous vous proposons des produits de qualité, des marques reconnues
+      et une expérience d’achat simple, moderne et rassurante.
+    </p>
+
+    <a href="{% url 'store:qui' %}" class="about-btn">
+      En savoir plus
+    </a>
+  </div>
+
+  <div class="about-home-image">
+    <img src="{% static 'image/alkayre.png' %}" alt="City Pharma Plus">
+  </div>
+</section>
+
+
+<!-- ================= COUNTERS ================= -->
+
+<section class="counters-section">
+  <div class="counters-grid">
+    <div class="counter-card">
+      <h3><span data-count="3160">0</span>+</h3>
+      <p>Commandes livrées</p>
+    </div>
+
+    <div class="counter-card">
+      <h3><span data-count="5200">0</span>+</h3>
+      <p>Produits disponibles</p>
+    </div>
+
+    <div class="counter-card">
+      <h3><span data-count="98">0</span>%</h3>
+      <p>Clients satisfaits</p>
+    </div>
+
+    <div class="counter-card">
+      <h3><span data-count="50">0</span>+</h3>
+      <p>Partenaires</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================= REVIEWS ================= -->
+
+<section class="reviews-section">
+  <div class="section-heading">
+    <h2><span>Ce que</span> disent nos clients</h2>
+    <p>Des avis authentiques pour mieux vous guider.</p>
+  </div>
+
+  <div class="reviews-wrapper">
+    <div class="reviews-controls">
+      <button class="reviews-arrow arrow-left" type="button" onclick="scrollAvis(-1)">‹</button>
+      <button class="reviews-arrow arrow-right" type="button" onclick="scrollAvis(1)">›</button>
+    </div>
+
+
+    <div class="reviews-list" id="avisList">
+      {% for avis in avis %}
+      <article class="review-card">
+        <p class="commentaire collapse">{{ avis.commentaire }}</p>
+        <button class="toggle-btn" type="button" onclick="toggleComment(this)">Lire plus</button>
+
+        <p class="review-user">
+          <strong>{{ avis.user.username }}</strong>
+          <span>{{ avis.note }}/5 ⭐</span>
+        </p>
+
+        <small class="review-date">
+          Sur <strong>{{ avis.produit.nom }}</strong> | {{ avis.date_ajout|date:"d M Y" }}
+        </small>
+      </article>
+      {% empty %}
+
+      <div class="empty-box">
+        <p>Aucun avis disponible pour le moment.</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+
+
+<!-- ================= JS ================= -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const counters = document.querySelectorAll('.counter-card span');
+  let started = false;
+
+  function startCounting() {
+    counters.forEach(counter => {
+      const target = +counter.getAttribute('data-count');
+      const speed = 200;
+      let count = 0;
+
+      const updateCount = () => {
+        const increment = Math.ceil(target / speed);
+
+        if (count < target) {
+          count += increment;
+          if (count > target) count = target;
+          counter.textContent = count;
+          requestAnimationFrame(updateCount);
+        } else {
+          counter.textContent = target;
+        }
+      };
+
+      updateCount();
+    });
+  }
+
+  const countersSection = document.querySelector('.counters-section');
+
+  if (countersSection) {
+    window.addEventListener('scroll', () => {
+      const sectionTop = countersSection.getBoundingClientRect().top;
+      const screenHeight = window.innerHeight;
+
+      if (!started && sectionTop < screenHeight) {
+        startCounting();
+        started = true;
+      }
+    });
+  }
+
+  const slider = document.getElementById('homeProductsSlider');
+  const prevBtn = document.querySelector('.products-prev');
+  const nextBtn = document.querySelector('.products-next');
+
+  if (slider && prevBtn && nextBtn) {
+    const scrollAmount = 300;
+
+    prevBtn.addEventListener('click', function () {
+      slider.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    });
+
+    nextBtn.addEventListener('click', function () {
+      slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    });
+  }
+});
+
+
+function toggleComment(button) {
+  const commentaire = button.previousElementSibling;
+
+  commentaire.classList.toggle('expand');
+  commentaire.classList.toggle('collapse');
+
+  button.textContent = commentaire.classList.contains('expand') ? 'Lire moins' : 'Lire plus';
+}
+
+let avisIndex = 0;
+
+function scrollAvis(direction) {
+  const list = document.getElementById("avisList");
+
+  if (!list || !list.children.length) return;
+
+  const itemWidth = list.children[0].offsetWidth + 20;
+  const visibleItems = window.innerWidth <= 768 ? 1 : 3;
+  const maxIndex = Math.max(0, list.children.length - visibleItems);
+
+  avisIndex += direction;
+
+  if (avisIndex < 0) avisIndex = 0;
+  if (avisIndex > maxIndex) avisIndex = maxIndex;
+
+  list.style.transform = `translateX(-${avisIndex * itemWidth}px)`;
+}
+</script>
+{% endblock %}

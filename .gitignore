@@ -1,0 +1,69 @@
+# Python
+
+**pycache**/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Django generated files
+
+staticfiles/
+static/admin/
+*.log
+*.sqlite3-journal
+local_settings.py
+
+# Virtual environments
+
+venv/
+env/
+ENV/
+
+# IDE / Editors
+
+.idea/
+.vscode/
+
+# System files
+
+.DS_Store
+Thumbs.db
+
+# Backups / archives
+
+*.zip
+*.rar
+*.7z
+
+# Secrets / environment variables
+
+.env
+
+# Old / unused root folders
+
+categories/
+client/
+marques/
+offres/
+orders/
+packs/
+products_img/
+sous_categories/
+
+# Do not push order receipts
+
+media/orders/
+
+# Do not push duplicated / old media folder
+
+media/site/
+
+# Saved browser pages / useless downloads
+
+static/image/*Recherche Images_files/
+static/image/*Recherche Images.html
+*.mhtml
+
+# SQLite temporary files
+
+db.sqlite3-journal

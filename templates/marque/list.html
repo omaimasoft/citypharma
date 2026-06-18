@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Nos Marques | City Pharma Plus
+{% endblock %}
+
+{% block meta_description %}
+Découvrez les marques de parapharmacie disponibles chez City Pharma Plus : soins visage, cheveux, corps, solaire, bébé, dentaire, santé et bien-être au Maroc.
+{% endblock %}
+
+{% block meta_keywords %}
+marques parapharmacie, City Pharma Plus, Bioderma, CeraVe, SVR, Avène, La Roche-Posay, Uriage, Nuxe, parapharmacie Maroc
+{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/mark.css' %}">
+<link rel="stylesheet" href="{% static 'css/pagination.css' %}">
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Nos Marques | City Pharma Plus">
+<meta property="og:description" content="Découvrez les marques de parapharmacie disponibles chez City Pharma Plus.">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+<meta property="og:site_name" content="City Pharma Plus">
+<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'image/1066d72136b712191874bc6365829a8d.jpg' %}">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Nos Marques | City Pharma Plus">
+<meta name="twitter:description" content="Découvrez les marques de parapharmacie disponibles chez City Pharma Plus.">
+<meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'image/1066d72136b712191874bc6365829a8d.jpg' %}">
+
+{% if page_obj and page_obj.has_previous %}
+<link rel="prev" href="?{% if pagination_query %}{{ pagination_query }}&{% endif %}page={{ page_obj.previous_page_number }}">
+{% endif %}
+
+{% if page_obj and page_obj.has_next %}
+<link rel="next" href="?{% if pagination_query %}{{ pagination_query }}&{% endif %}page={{ page_obj.next_page_number }}">
+{% endif %}
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Nos Marques | City Pharma Plus",
+  "description": "Liste des marques de parapharmacie disponibles chez City Pharma Plus.",
+  "url": "{{ request.build_absolute_uri }}",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "City Pharma Plus",
+    "url": "{{ request.scheme }}://{{ request.get_host }}"
+  },
+  "mainEntity": {
+    "@type": "ItemList",
+    "itemListElement": [
+      {% for marque in marques %}
+      {
+        "@type": "ListItem",
+        "position": {{ forloop.counter }},
+        "name": "{{ marque.nom|escapejs }}",
+        "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'store:produits_par_marque' marque.nom %}"
+      }{% if not forloop.last %},{% endif %}
+      {% endfor %}
+    ]
+  }
+}
+</script>
+{% endblock %}
+
+{% block content %}
+
+<section class="brands-hero"
+    style="background-image:
+        linear-gradient(rgba(19, 19, 19, 0.833), rgba(0, 0, 0, 0.4)),
+        url('{% static 'image/1066d72136b712191874bc6365829a8d.jpg' %}');"
+>
+    <div class="brands-overlay"></div>
+
+    <div class="brands-hero-content">
+        <span class="brands-kicker">City Pharma Plus</span>
+
+        <h1>Nos Marques</h1>
+
+        <p>
+            Découvrez les marques de parapharmacie que nous proposons, soigneusement
+            sélectionnées pour votre santé, votre beauté et votre bien-être au quotidien.
+        </p>
+    </div>
+</section>
+
+<section class="brands-section">
+
+    <div class="section-head">
+        <span>Marques partenaires</span>
+        <h2>Les marques que nous vendons</h2>
+        <p>Choisissez une marque pour découvrir ses produits disponibles.</p>
+    </div>
+
+    <div class="brands-grid">
+        {% for marque in marques %}
+            <article class="brand-card">
+                <a href="{% url 'store:produits_par_marque' marque.nom %}" class="brand-card-link">
+
+                    <div class="image-wrapper">
+                        {% if marque.image %}
+                            <img src="{{ marque.image.url }}" alt="{{ marque.nom }}" loading="lazy">
+                        {% else %}
+                            <div class="no-image">
+                                {{ marque.nom|slice:":1" }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="brand-card-body">
+                        <h3>{{ marque.nom }}</h3>
+
+                        <p>
+                            {% if marque.nbr_produits %}
+                                {{ marque.nbr_produits }} produit{{ marque.nbr_produits|pluralize }}
+                            {% else %}
+                                0 produit
+                            {% endif %}
+                        </p>
+
+                        <span class="btn-brand">
+                            Voir produits
+                        </span>
+                    </div>
+
+                </a>
+            </article>
+        {% empty %}
+            <div class="empty-state">
+                <p>Aucune marque disponible pour le moment.</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% include "store/includes/pagination.html" %}
+
+</section>
+
+{% endblock %}

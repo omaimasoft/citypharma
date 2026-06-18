@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Modifier mon compte - City Pharma Plus{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+
+<div class="login-container">
+    <h2>Modifier mon compte</h2>
+
+    <form method="post" class="login-form">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <ul class="errorlist">
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <label for="id_first_name">Prénom :</label>
+        {{ form.first_name }}
+        {{ form.first_name.errors }}
+
+        <label for="id_last_name">Nom :</label>
+        {{ form.last_name }}
+        {{ form.last_name.errors }}
+
+        <label for="id_email">Email :</label>
+        {{ form.email }}
+        {{ form.email.errors }}
+
+
+        <label for="id_phone">Téléphone :</label>
+{{ form.phone }}
+{{ form.phone.errors }}
+
+        <input type="submit" value="Enregistrer les modifications">
+    </form>
+
+    <p class="auth-link">
+        <a href="{% url 'accounts:profile' %}">Retour à mon compte</a>
+    </p>
+</div>
+{% endblock %}

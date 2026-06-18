@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mon compte - City Pharma Plus{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+
+<section class="account-page">
+    <div class="account-container">
+
+        <div class="account-card">
+            <div class="account-header">
+                <div class="account-avatar">
+                    {{ request.user.username|slice:":1"|upper }}
+                </div>
+
+                <div>
+                    <span class="account-kicker">Espace client</span>
+                    <h1>Mon compte</h1>
+                    <p>Bienvenue, {{ request.user.first_name|default:request.user.username }}</p>
+                </div>
+            </div>
+
+            <div class="account-info-grid">
+                <div class="account-info-item">
+                    <span>Identifiant</span>
+                    <strong>{{ request.user.username }}</strong>
+                </div>
+
+                <div class="account-info-item">
+                    <span>Nom complet</span>
+                    <strong>
+                        {% if request.user.get_full_name %}
+                            {{ request.user.get_full_name }}
+                        {% else %}
+                            Non renseigné
+                        {% endif %}
+                    </strong>
+                </div>
+
+                <div class="account-info-item">
+                    <span>Email</span>
+                    <strong>{{ request.user.email|default:"Non renseigné" }}</strong>
+                </div>
+
+                <div class="account-info-item">
+                    <span>Téléphone</span>
+                    <strong>
+                        {{ request.user.client_profile.phone|default:"Non renseigné" }}
+                    </strong>
+                </div>
+            </div>
+
+            <div class="account-actions">
+                <a href="{% url 'accounts:edit_profile' %}" class="account-btn">
+                    Modifier mes informations
+                </a>
+
+                <a href="{% url 'accounts:change_password' %}" class="account-btn">
+                    Changer le mot de passe
+                </a>
+
+                <a href="{% url 'accounts:my_orders' %}" class="account-btn">
+                    Mes commandes
+                </a>
+
+                <a href="{% url 'accounts:logout' %}" class="account-btn logout-btn">
+                    Déconnexion
+                </a>
+            </div>
+        </div>
+
+        <div class="account-card orders-preview-card">
+            <div class="account-section-title">
+                <div>
+                    <span class="account-kicker">Historique</span>
+                    <h2>Dernières commandes</h2>
+                </div>
+
+                <a href="{% url 'accounts:my_orders' %}" class="small-account-link">
+                    Voir tout
+                </a>
+            </div>
+
+            {% if recent_orders %}
+                <div class="recent-orders-list">
+                    {% for order in recent_orders %}
+                        <a href="{% url 'accounts:order_detail' order.id %}" class="recent-order-item">
+                            <div>
+                                <strong>Commande #{{ order.id }}</strong>
+                                <span>{{ order.created_at|date:"d/m/Y H:i" }}</span>
+                            </div>
+
+                            <div class="recent-order-right">
+                                <strong>{{ order.total_to_pay }} DH</strong>
+                                <span class="order-status status-{{ order.status }}">
+                                    {{ order.get_status_display }}
+                                </span>
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-account-box">
+                    <p>Vous n'avez pas encore de commandes.</p>
+                    <a href="{% url 'store:index' %}">Découvrir la boutique</a>
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+</section>
+{% endblock %}

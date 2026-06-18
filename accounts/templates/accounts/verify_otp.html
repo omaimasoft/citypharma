@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Vérification du code - City Pharma Plus{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+
+<div class="login-container">
+    <h2>Vérifier le code</h2>
+
+    <p class="auth-link">
+        Entrez le code de vérification reçu par SMS.
+    </p>
+
+    <form method="post" class="login-form">
+        {% csrf_token %}
+
+        {% if messages %}
+            {% for message in messages %}
+                <p class="form-message {{ message.tags }}">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+
+        <label for="id_code">Code de vérification :</label>
+        {{ form.code }}
+        {{ form.code.errors }}
+
+        <input type="submit" value="Vérifier le code">
+    </form>
+
+    <p class="auth-link">
+        <a href="{% url 'accounts:forgot_password' %}">Demander un nouveau code</a>
+    </p>
+</div>
+{% endblock %}

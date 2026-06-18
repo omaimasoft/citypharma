@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Panier | City Pharma Plus{% endblock %}
+{% block meta_description %}Consultez votre panier, modifiez les quantités et validez votre commande en toute simplicité sur City Pharma Plus.{% endblock %}
+{% block meta_keywords %}panier, commande, parapharmacie, City Pharma Plus{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/cart.css' %}">
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
+{% endblock %}
+
+{% block content %}
+<section class="cart-page">
+    <div class="cart-container">
+
+        <div class="cart-header">
+            <div>
+                <span class="cart-kicker">Votre sélection</span>
+                <h1>Mon Panier</h1>
+
+                {% if cart_items %}
+                    <p>{{ cart_items|length }} article{{ cart_items|length|pluralize }} dans votre panier</p>
+                {% else %}
+                    <p>Votre panier est actuellement vide.</p>
+                {% endif %}
+            </div>
+
+            <a href="{% url 'store:index' %}" class="continue-shopping">
+                ← Continuer mes achats
+            </a>
+        </div>
+
+        {% if cart_items %}
+            <div class="cart-layout">
+
+                <div class="cart-products">
+                    {% for item in cart_items %}
+                        <article class="cart-card">
+
+                            <div class="cart-image-wrap">
+                                {% if item.product and item.product.image %}
+                                    <img src="{{ item.product.image.url }}" alt="{{ item.product.nom }}" class="cart-image">
+                                {% elif item.offre and item.offre.image %}
+                                    <img src="{{ item.offre.image.url }}" alt="{{ item.offre.nom }}" class="cart-image">
+                                {% else %}
+                                    <img src="{% static 'image/default-product.jpg' %}" alt="Produit" class="cart-image">
+                                {% endif %}
+
+                                {% if item.product and item.product.has_discount %}
+                                    <span class="cart-discount-badge">
+                                        -{{ item.product.get_discount_percentage }}%
+                                    </span>
+                                {% endif %}
+                            </div>
+
+                            <div class="cart-content">
+
+                                <div class="cart-top">
+                                    <div>
+                                        <span class="item-type">
+                                            {% if item.offre %}
+                                                Offre
+                                            {% else %}
+                                                Produit
+                                            {% endif %}
+                                        </span>
+
+                                        <h3 class="item-name">
+                                            {% if item.offre %}
+                                                {{ item.offre.nom }}
+                                            {% elif item.product %}
+                                                {{ item.product.nom }}
+                                            {% endif %}
+                                        </h3>
+
+                                        {% if item.product and item.product.marque %}
+                                            <p class="cart-brand">
+                                                {{ item.product.marque.nom }}
+                                            </p>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="item-price-box">
+                                        {% if item.product %}
+                                            {% if item.product.has_discount %}
+                                                <span class="discount">{{ item.product.get_price }} DH</span>
+                                                <del class="original-price">{{ item.product.get_old_price }} DH</del>
+                                            {% else %}
+                                                <span class="price">{{ item.product.get_price }} DH</span>
+                                            {% endif %}
+                                        {% elif item.offre %}
+                                            <span class="price">{{ item.offre.prix_total }} DH</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="cart-actions-row">
+
+                                    <form method="post"
+                                          action="{% url 'store:update_quantity' item.id %}"
+                                          class="update-quantity-form">
+                                        {% csrf_token %}
+
+                                        <label for="quantity-{{ item.id }}">Quantité</label>
+
+                                        <div class="quantity-update-box">
+                                            <input
+                                                type="number"
+                                                id="quantity-{{ item.id }}"
+                                                name="quantity"
+                                                value="{{ item.quantity }}"
+                                                min="1"
+                                                {% if item.product %}
+                                                    max="{{ item.product.stock }}"
+                                                {% endif %}
+                                                required
+                                            >
+
+                                            <button type="submit" class="update-btn">
+                                                Mettre à jour
+                                            </button>
+                                        </div>
+
+                                        {% if item.product %}
+                                            <small class="qty-hint">
+                                                Stock disponible : {{ item.product.stock }}
+                                            </small>
+                                        {% endif %}
+                                    </form>
+
+                                    <form method="post"
+                                          action="{% url 'store:remove_item' item.id %}"
+                                          class="remove-form">
+                                        {% csrf_token %}
+                                        <button type="submit" class="remove-btn">
+                                            Supprimer
+                                        </button>
+                                    </form>
+
+                                </div>
+
+                                <div class="item-total-line">
+                                    <span>Total article :</span>
+                                    <strong>{{ item.get_price }} DH</strong>
+                                </div>
+
+                            </div>
+
+                        </article>
+                    {% endfor %}
+                </div>
+
+                <aside class="cart-summary">
+                    <div class="summary-card">
+                        <h2>Résumé de la commande</h2>
+
+                        <div class="summary-line">
+                            <span>Sous-total</span>
+                            <strong>{{ total }} DH</strong>
+                        </div>
+
+                        <div class="summary-line">
+                            <span>Livraison</span>
+                            <strong>{{ shipping_cost }} DH</strong>
+                        </div>
+
+                        <div class="summary-divider"></div>
+
+                        <div class="summary-line total">
+                            <span>Total TTC</span>
+                            <strong>{{ total_with_shipping }} DH</strong>
+                        </div>
+
+                        <a href="{% url 'store:checkout' %}" class="checkout-btn">
+                            Passer la commande
+                        </a>
+
+                        <form method="post" action="{% url 'store:delete_cart' %}" class="clear-cart-form">
+                            {% csrf_token %}
+                            <button type="submit" class="clear-cart-btn">
+                                Supprimer le panier
+                            </button>
+                        </form>
+
+                        <div class="summary-benefits">
+                            <div class="benefit-item">✓ Paiement à la livraison</div>
+                            <div class="benefit-item">✓ Livraison rapide</div>
+                            <div class="benefit-item">✓ Commande sécurisée</div>
+                        </div>
+                    </div>
+                </aside>
+
+            </div>
+        {% else %}
+            <div class="empty-cart-box">
+                <div class="empty-icon">
+                    <i class='bx bx-cart'></i>
+                </div>
+
+                <h2>Votre panier est vide</h2>
+                <p>Ajoutez vos produits favoris pour continuer vos achats.</p>
+
+                <a href="{% url 'store:index' %}" class="shop-btn">
+                    Découvrir la boutique
+                </a>
+            </div>
+        {% endif %}
+
+    </div>
+</section>
+{% endblock %}

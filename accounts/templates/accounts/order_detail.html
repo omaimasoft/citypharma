@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Détail commande - City Pharma Plus{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+
+<section class="order-detail-page">
+    <div class="order-detail-container">
+
+        <div class="orders-header">
+            <div>
+                <span class="account-kicker">Commande client</span>
+                <h1>Détail de la commande #{{ order.id }}</h1>
+                <p>Commande passée le {{ order.created_at|date:"d/m/Y H:i" }}</p>
+            </div>
+
+            <a href="{% url 'accounts:my_orders' %}" class="small-account-link">
+                ← Retour à mes commandes
+            </a>
+        </div>
+
+        <div class="order-detail-layout">
+
+            <div class="order-detail-main">
+
+                <div class="order-detail-card">
+                    <div class="order-card-top">
+                        <div>
+                            <h3>Informations de livraison</h3>
+                            <p>Les informations utilisées pour cette commande.</p>
+                        </div>
+
+                        <span class="order-status status-{{ order.status }}">
+                            {{ order.get_status_display }}
+                        </span>
+                    </div>
+
+                    <div class="order-info-grid">
+                        <div>
+                            <span>Nom complet</span>
+                            <strong>{{ order.full_name }}</strong>
+                        </div>
+
+                        <div>
+                            <span>Téléphone</span>
+                            <strong>{{ order.phone }}</strong>
+                        </div>
+
+                        {% if order.email %}
+                        <div>
+                            <span>Email</span>
+                            <strong>{{ order.email }}</strong>
+                        </div>
+                        {% endif %}
+
+                        <div>
+                            <span>Adresse</span>
+                            <strong>{{ order.address }}</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="order-detail-card">
+                    <div class="account-section-title">
+                        <div>
+                            <span class="account-kicker">Produits</span>
+                            <h2>Produits commandés</h2>
+                        </div>
+                    </div>
+
+                    {% if order.items.all %}
+                        <div class="order-items-list">
+                            {% for item in order.items.all %}
+                                <div class="order-item-row">
+                                    <div class="order-item-info">
+                                        <strong>{{ item.name }}</strong>
+                                        <span>Quantité : {{ item.quantity }}</span>
+                                    </div>
+
+                                    <div class="order-item-price">
+                                        <span>{{ item.unit_price }} DH / unité</span>
+                                        <strong>{{ item.total_price }} DH</strong>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="empty-account-box">
+                            <p>Aucun produit trouvé dans cette commande.</p>
+                        </div>
+                    {% endif %}
+                </div>
+
+            </div>
+
+            <aside class="order-detail-summary">
+                <div class="order-detail-card summary-order-card">
+                    <h2>Résumé</h2>
+
+                    <div class="summary-line">
+                        <span>Total produits</span>
+                        <strong>{{ order.total_products }} DH</strong>
+                    </div>
+
+                    <div class="summary-line">
+                        <span>Livraison</span>
+                        <strong>{{ order.shipping_cost }} DH</strong>
+                    </div>
+
+                    <div class="summary-divider"></div>
+
+                    <div class="summary-line total">
+                        <span>Total à payer</span>
+                        <strong>{{ order.total_to_pay }} DH</strong>
+                    </div>
+
+                    <div class="account-actions">
+                        <a href="{% url 'accounts:my_orders' %}" class="account-btn">
+                            Mes commandes
+                        </a>
+
+                        <a href="{% url 'accounts:profile' %}" class="account-btn">
+                            Mon compte
+                        </a>
+                    </div>
+                </div>
+            </aside>
+
+        </div>
+
+    </div>
+</section>
+{% endblock %}

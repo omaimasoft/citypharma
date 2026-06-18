@@ -1,0 +1,75 @@
+{% load static %}
+
+<footer class="site-footer">
+  <div class="footer-container">
+
+    <div class="footer-grid">
+
+      <div class="footer-brand">
+        <a href="{% url 'store:index' %}" class="footer-logo">
+          <img src="{% static 'image/120.png' %}" alt="City Pharma Plus">
+        </a>
+
+        <p class="footer-brand-text">
+          City Pharma Plus est votre partenaire en parapharmacie en ligne.
+          Nous vous proposons des produits de qualité, des marques reconnues
+          et un service fiable pour votre bien-être au quotidien.
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Menu</h4>
+        <ul>
+          <li><a href="{% url 'store:index' %}">Accueil</a></li>
+          <li><a href="{% url 'store:qui' %}">Qui sommes-nous</a></li>
+          <li><a href="{% url 'store:liste_offres' %}">Offres</a></li>
+          <li><a href="{% url 'contact' %}">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Catégories</h4>
+        <ul>
+          <li><a href="{% url 'store:produits_par_categorie' 'V' %}">Visage</a></li>
+          <li><a href="{% url 'store:produits_par_categorie' 'C' %}">Corps</a></li>
+          <li><a href="{% url 'store:produits_par_categorie' 'CH' %}">Cheveux</a></li>
+          <li><a href="{% url 'store:produits_par_categorie' 'B' %}">Bébés</a></li>
+          <li><a href="{% url 'store:produits_par_categorie' 'S' %}">Solaires</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Contact</h4>
+
+        <ul class="footer-contact">
+          <li>
+            <i class='bx bx-phone'></i>
+            <a href="tel:+212661440367">+212 661440367</a>
+          </li>
+          <li>
+            <i class='bx bx-envelope'></i>
+            <a href="mailto:contact@citypharmaplus.com">contact@citypharmaplus.com</a>
+          </li>
+          <li>
+            <i class='bx bx-map'></i>
+            <span>Ait Melloul, Maroc</span>
+          </li>
+        </ul>
+
+        <div class="footer-social">
+          <a href="#" aria-label="Facebook"><i class='bx bxl-facebook'></i></a>
+          <a href="#" aria-label="Instagram"><i class='bx bxl-instagram'></i></a>
+          <a href="#" aria-label="TikTok"><i class='bx bxl-tiktok'></i></a>
+          <a href="#" aria-label="WhatsApp"><i class='bx bxl-whatsapp'></i></a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 City Pharma Plus. Tous droits réservés.</p>
+      <p class="footer-credit">Site conçu et développé par <span>Omaima Soft</span></p>
+    </div>
+
+  </div>
+</footer>

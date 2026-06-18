@@ -1,0 +1,104 @@
+:root {
+  --primary: #036d70;
+  --secondary: #02585a;
+  --accent: #2aa387;
+
+  --primary-fg: #ffffff;
+  --body-fg: #243533;
+  --body-bg: #f7fbfa;
+  --body-quiet-color: #6b7d7b;
+  --border-color: #d7e6e3;
+
+  --header-color: #ffffff;
+  --header-bg: #036d70;
+  --header-link-color: #ffffff;
+
+  --breadcrumbs-fg: #d7f0eb;
+  --breadcrumbs-link-fg: #ffffff;
+  --breadcrumbs-bg: #02585a;
+
+  --link-fg: #036d70;
+  --link-hover-color: #02585a;
+
+  --button-fg: #ffffff;
+  --button-bg: #036d70;
+  --button-hover-bg: #02585a;
+  --default-button-bg: #2aa387;
+  --default-button-hover-bg: #21836d;
+
+  --selected-row: #eef8f7;
+}
+
+/* فقط الهيدر */
+#header {
+  background: #036d70 !important;
+  color: #fff !important;
+}
+
+#header a:link,
+#header a:visited {
+  color: #fff !important;
+}
+
+/* فقط breadcrumb */
+div.breadcrumbs {
+  background: #02585a !important;
+  color: #d7f0eb !important;
+}
+
+div.breadcrumbs a {
+  color: #fff !important;
+}
+
+/* عناوين الموديولات */
+.module h2,
+.module caption,
+.inline-group h2 {
+  background: #036d70 !important;
+  color: #fff !important;
+}
+
+/* الروابط */
+a {
+  color: #036d70;
+}
+
+a:hover {
+  color: #02585a;
+}
+
+/* الأزرار */
+.button,
+input[type=submit],
+input[type=button],
+.submit-row input,
+a.button {
+  background: #036d70 !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 8px;
+}
+
+.button:hover,
+input[type=submit]:hover,
+input[type=button]:hover,
+.submit-row input:hover,
+a.button:hover {
+  background: #02585a !important;
+}
+
+/* زر الحفظ الرئيسي */
+.submit-row input.default {
+  background: #2aa387 !important;
+}
+
+.submit-row input.default:hover {
+  background: #21836d !important;
+}
+
+/* رسائل النجاح */
+.messagelist .success {
+  background: #e8f8ee !important;
+  color: #166534 !important;
+  border: 1px solid #b9e6c7 !important;
+}

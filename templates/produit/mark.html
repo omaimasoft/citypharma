@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contactez-nous - Alkayre{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/mark.css' %}">
+
+<div class="contact-section">
+
+  <!-- صورة الخلفية -->
+  <section>
+    <div class="title">
+      <h2>Nos Marques</h2>
+    </div>
+  </section>
+<br>
+<br>
+  <!-- الشبكة -->
+  <div class="brands-grid">
+
+    <!-- بطاقة ماركة -->
+    <div class="card">
+      <div class="image-wrapper">
+        <img src="{% static 'image/284-brand_default_2x.webp' %}" alt="CERAVE">
+      </div>
+      <h3><strong>SVR</strong></h3>
+      <p>37 Produits</p>
+      <a href="{% url 'svr_page' %}" class="btn">Afficher les produits</a>
+    </div>
+
+    <div class="card">
+      <div class="image-wrapper">
+        <img src="{% static 'image/405-small_default.webp' %}" alt="CETAPHIL">
+      </div>
+            <h3><strong>Cerave</strong></h3>
+      <p>31 Produits</p>
+      <a href="#" class="btn">Afficher les produits</a>
+    </div>
+
+    <div class="card">
+      <div class="image-wrapper">
+        <img src="{% static 'image/231-brand_default_2x.webp' %}" alt="CETAPHIL">
+      </div>
+      <h3>CETAPHIL</h3>
+      <p>31 Produits</p>
+      <a href="#" class="btn">Afficher les produits</a>
+    </div>
+
+    <div class="card">
+      <div class="image-wrapper">
+        <img src="{% static 'image/145-brand_default_2x.webp' %}" alt="CHATEAU ROUGE">
+      </div>
+      <h3>CHATEAU ROUGE</h3>
+      <p>1 Produit</p>
+      <a href="#" class="btn">Afficher les produits</a>
+    </div>
+
+    <!-- صف ثاني -->
+    <div class="card">
+      <div class="image-wrapper">
+        <img src="{% static 'image/139-brand_default_2x.webp' %}" alt="CERAVE">
+      </div>
+      <h3>CERAVE</h3>
+      <p>37 Produits</p>
+      <a href="{% url 'svr_page' %}" class="btn">Afficher les produits</a>
+    </div>
+
+    <div class="card">
+      <div class="image-wrapper">
+        <img src="{% static 'image/302-brand_default_2x.webp' %}" alt="CETAPHIL">
+      </div>
+      <h3>CETAPHIL</h3>
+      <p>31 Produits</p>
+      <a href="#" class="btn">Afficher les produits</a>
+    </div>
+
+    <div class="card">
+      <div class="image-wrapper">
+        <img src="{% static 'image/310-brand_default_2x.webp' %}" alt="CETAPHIL">
+      </div>
+      <h3>CETAPHIL</h3>
+      <p>31 Produits</p>
+      <a href="#" class="btn">Afficher les produits</a>
+    </div>
+
+
+    <div class="card">
+      <div class="image-wrapper">
+        <img src="{% static 'image/91-small_default.webp' %}" alt="CETAPHIL">
+      </div>
+      <h3>CETAPHIL</h3>
+      <p>31 Produits</p>
+      <a href="#" class="btn">Afficher les produits</a>
+    </div>
+
+
+    
+    <div class="card">
+      <div class="image-wrapper">
+        <img src="{% static 'image/298-brand_default_2x.webp' %}" alt="CETAPHIL">
+      </div>
+      <h3>CETAPHIL</h3>
+      <p>31 Produits</p>
+      <a href="#" class="btn">Afficher les produits</a>
+    </div>
+
+    <div class="card">
+      <div class="image-wrapper">
+        <img src="{% static 'image/eucerin.png' %}" alt="CHATEAU ROUGE">
+      </div>
+      <h3>CHATEAU ROUGE</h3>
+      <p>1 Produit</p>
+      <a href="#" class="btn">Afficher les produits</a>
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}

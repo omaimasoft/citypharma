@@ -1,0 +1,337 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Qui sommes-nous | City Pharma Plus{% endblock %}
+
+{% block extra_head %}
+<meta name="description" content="Découvrez City Pharma Plus, parapharmacie à Ait Melloul et en ligne au Maroc. Produits de parapharmacie, conseils, service client réactif, commande simple et livraison.">
+<meta name="keywords" content="City Pharma Plus, parapharmacie Maroc, parapharmacie Ait Melloul, produits parapharmacie, soins visage, soins corps, compléments alimentaires, bébé, solaire">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+<meta property="og:title" content="Qui sommes-nous | City Pharma Plus">
+<meta property="og:description" content="Découvrez City Pharma Plus, votre parapharmacie de confiance au Maroc : qualité, proximité, accompagnement client et commande simple.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+<meta property="og:site_name" content="City Pharma Plus">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Qui sommes-nous | City Pharma Plus">
+<meta name="twitter:description" content="City Pharma Plus, votre parapharmacie de confiance à Ait Melloul et en ligne au Maroc.">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  "name": "Qui sommes-nous | City Pharma Plus",
+  "url": "{{ request.build_absolute_uri }}",
+  "mainEntity": {
+    "@type": "Pharmacy",
+    "name": "City Pharma Plus",
+    "email": "Alkhayrinnovation@gmail.com",
+    "telephone": "+212661440367",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Local commercial N°211, Souk Alkhayr, Av la Marche Verte, Tamazart",
+      "addressLocality": "Ait Melloul",
+      "addressCountry": "MA"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+212661440367",
+      "contactType": "customer service",
+      "availableLanguage": ["fr", "ar"]
+    }
+  }
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/qui.css' %}">
+
+<section class="about-hero">
+    <div class="about-hero-content">
+        <span class="about-badge">City Pharma Plus</span>
+
+        <h1>Votre parapharmacie de confiance</h1>
+
+        <p>
+            City Pharma Plus accompagne ses clients avec une sélection de produits de parapharmacie,
+            un service client attentif et une expérience d’achat simple, claire et sécurisée.
+        </p>
+
+        <div class="about-hero-actions">
+            <a href="{% url 'store:index' %}" class="about-btn primary">
+                Découvrir nos produits
+            </a>
+
+            <a href="https://wa.me/212661440367" target="_blank" rel="noopener" class="about-btn secondary">
+                Nous contacter sur WhatsApp
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="about-intro">
+    <div class="about-container">
+        <div class="about-card about-intro-card">
+            <div>
+                <span class="section-label">À propos</span>
+                <h2>Qui sommes-nous ?</h2>
+
+                <p>
+                    City Pharma Plus est une parapharmacie basée à Ait Melloul, avec une présence en ligne
+                    pensée pour faciliter l’accès aux produits de soin, d’hygiène, de bien-être et de
+                    parapharmacie au Maroc.
+                </p>
+
+                <p>
+                    Notre objectif est de proposer une expérience fiable : des produits bien présentés,
+                    des informations claires, une commande simple et un accompagnement client humain
+                    avant et après l’achat.
+                </p>
+            </div>
+
+            <div class="trust-box">
+                <h3>Notre priorité</h3>
+                <p>
+                    Vous aider à choisir vos produits avec plus de confiance, tout en gardant un service
+                    proche, sérieux et réactif.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="about-stats">
+    <div class="about-container stats-grid">
+        <div class="stat-card">
+            <strong>100%</strong>
+            <span>Commande simple</span>
+        </div>
+
+        <div class="stat-card">
+            <strong>7j/7</strong>
+            <span>Contact WhatsApp</span>
+        </div>
+
+        <div class="stat-card">
+            <strong>+8</strong>
+            <span>Univers produits</span>
+        </div>
+
+        <div class="stat-card">
+            <strong>Maroc</strong>
+            <span>Service local</span>
+        </div>
+    </div>
+</section>
+
+<section class="about-values">
+    <div class="about-container">
+        <div class="section-heading">
+            <span class="section-label">Nos engagements</span>
+            <h2>Ce qui construit la confiance</h2>
+            <p>
+                Nous avançons avec des principes simples : clarté, sérieux, qualité de service
+                et respect du client.
+            </p>
+        </div>
+
+        <div class="values-grid">
+            <article class="value-card">
+                <div class="value-icon">
+                    <i class='bx bx-check-shield'></i>
+                </div>
+                <h3>Produits sélectionnés</h3>
+                <p>
+                    Nous mettons en avant des produits adaptés aux besoins du quotidien :
+                    visage, corps, cheveux, bébé, solaire, hygiène et bien-être.
+                </p>
+            </article>
+
+            <article class="value-card">
+                <div class="value-icon">
+                    <i class='bx bx-conversation'></i>
+                </div>
+                <h3>Conseil & écoute</h3>
+                <p>
+                    Notre équipe reste disponible pour répondre à vos questions et vous orienter
+                    selon vos besoins.
+                </p>
+            </article>
+
+            <article class="value-card">
+                <div class="value-icon">
+                    <i class='bx bx-package'></i>
+                </div>
+                <h3>Commande claire</h3>
+                <p>
+                    Le panier, le total, la livraison et la confirmation sont affichés clairement
+                    pour éviter toute confusion.
+                </p>
+            </article>
+
+            <article class="value-card">
+                <div class="value-icon">
+                    <i class='bx bx-lock-alt'></i>
+                </div>
+                <h3>Expérience sécurisée</h3>
+                <p>
+                    Nous accordons une importance particulière à la confidentialité des informations
+                    et à la fiabilité du parcours client.
+                </p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="about-story">
+    <div class="about-container story-grid">
+        <div class="about-card">
+            <span class="section-label">Notre mission</span>
+            <h2>Faciliter l’accès aux produits de parapharmacie</h2>
+
+            <p>
+                Notre mission est de rendre l’achat de produits de parapharmacie plus simple,
+                plus accessible et plus rassurant pour les clients au Maroc.
+            </p>
+
+            <p>
+                Nous voulons offrir un site clair, un service réactif et un accompagnement
+                qui aide chaque client à passer commande avec confiance.
+            </p>
+        </div>
+
+        <div class="about-card">
+            <span class="section-label">Notre vision</span>
+            <h2>Devenir une adresse fiable pour votre bien-être</h2>
+
+            <p>
+                City Pharma Plus souhaite devenir une référence de proximité dans la parapharmacie,
+                en combinant qualité de service, choix de produits et relation client sérieuse.
+            </p>
+
+            <p>
+                Notre vision est de construire une expérience moderne, humaine et durable,
+                adaptée aux besoins des familles et des clients au quotidien.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="about-process">
+    <div class="about-container">
+        <div class="section-heading">
+            <span class="section-label">Comment commander ?</span>
+            <h2>Un parcours simple en quelques étapes</h2>
+        </div>
+
+        <div class="process-grid">
+            <div class="process-step">
+                <span>01</span>
+                <h3>Choisissez vos produits</h3>
+                <p>Parcourez les catégories et ajoutez vos articles au panier.</p>
+            </div>
+
+            <div class="process-step">
+                <span>02</span>
+                <h3>Validez votre panier</h3>
+                <p>Vérifiez les quantités, le sous-total et les frais de livraison.</p>
+            </div>
+
+            <div class="process-step">
+                <span>03</span>
+                <h3>Confirmez la commande</h3>
+                <p>Votre commande est enregistrée sur le site, avec option d’envoi via WhatsApp.</p>
+            </div>
+
+            <div class="process-step">
+                <span>04</span>
+                <h3>Nous vous contactons</h3>
+                <p>Notre équipe vous confirme les détails et organise la livraison.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="about-why">
+    <div class="about-container why-grid">
+        <div>
+            <span class="section-label">Pourquoi nous choisir ?</span>
+            <h2>Une parapharmacie proche de ses clients</h2>
+
+            <p>
+                Nous savons que la confiance est essentielle lorsqu’il s’agit de produits de soin
+                et de bien-être. C’est pourquoi nous privilégions la clarté, la disponibilité
+                et la qualité de l’accompagnement.
+            </p>
+        </div>
+
+        <div class="why-list">
+            <div class="why-item">
+                <i class='bx bx-check-circle'></i>
+                <span>Large choix de produits de parapharmacie</span>
+            </div>
+
+            <div class="why-item">
+                <i class='bx bx-check-circle'></i>
+                <span>Service client disponible par téléphone et WhatsApp</span>
+            </div>
+
+            <div class="why-item">
+                <i class='bx bx-check-circle'></i>
+                <span>Commande simple avec confirmation claire</span>
+            </div>
+
+            <div class="why-item">
+                <i class='bx bx-check-circle'></i>
+                <span>Paiement à la livraison disponible</span>
+            </div>
+
+            <div class="why-item">
+                <i class='bx bx-check-circle'></i>
+                <span>Présence locale à Ait Melloul</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="about-note-section">
+    <div class="about-container">
+        <div class="about-note">
+            <i class='bx bx-info-circle'></i>
+            <p>
+                Les informations présentes sur notre site sont fournies à titre informatif.
+                Pour toute question médicale ou situation particulière, demandez conseil à un professionnel de santé.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="about-contact-cta">
+    <div class="about-container">
+        <div class="cta-box">
+            <span class="section-label">Besoin d’aide ?</span>
+
+            <h2>Notre équipe est à votre écoute</h2>
+
+            <p>
+                Une question sur un produit, une commande ou une livraison ?
+                Contactez-nous, nous vous répondrons rapidement.
+            </p>
+
+            <div class="cta-buttons">
+                <a href="{% url 'contact' %}" class="cta-primary">
+                    Nous contacter
+                </a>
+
+                <a href="https://wa.me/212661440367" target="_blank" rel="noopener" class="cta-secondary">
+                    WhatsApp
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

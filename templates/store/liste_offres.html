@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Offres Spéciales | City Pharma Plus{% endblock %}
+
+{% block meta_description %}
+Découvrez les offres spéciales de City Pharma Plus : promotions, réductions et packs sur des produits de parapharmacie, beauté, santé et bien-être.
+{% endblock %}
+
+{% block meta_keywords %}
+offres spéciales, promotions parapharmacie, City Pharma Plus, réductions, soins, beauté, santé, Maroc
+{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Offres Spéciales | City Pharma Plus">
+<meta property="og:description" content="Découvrez les promotions et offres spéciales disponibles chez City Pharma Plus.">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+<meta property="og:site_name" content="City Pharma Plus">
+<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'image/ofrre.png' %}">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Offres Spéciales | City Pharma Plus">
+<meta name="twitter:description" content="Promotions et offres spéciales sur une sélection de produits parapharmaceutiques.">
+<meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'image/ofrre.png' %}">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Offres Spéciales | City Pharma Plus",
+  "description": "Liste des offres spéciales et promotions disponibles chez City Pharma Plus.",
+  "url": "{{ request.build_absolute_uri }}",
+  "mainEntity": {
+    "@type": "ItemList",
+    "itemListElement": [
+      {% for offre in offres %}
+      {
+        "@type": "ListItem",
+        "position": {{ forloop.counter }},
+        "name": "{{ offre.nom|escapejs }}",
+        "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'store:detail_offre' offre.slug %}"
+      }{% if not forloop.last %},{% endif %}
+      {% endfor %}
+    ]
+  }
+}
+</script>
+{% endblock %}
+
+{% block content %}
+
+<section>
+    <div class="imo">
+        <div class="hero">
+            <h1>Nos Offres Spéciales</h1>
+
+            <h3>
+                Profitez des meilleures réductions sur les produits de parapharmacie,
+                soins, beauté, santé et bien-être chez City Pharma Plus.
+            </h3>
+
+            <div class="buttons">
+                <a href="#offres" class="btn btn-primary">
+                    Découvrir les offres
+                </a>
+
+                <a href="{% url 'marque:liste_marques' %}" class="btn btn-secondary">
+                    Nos marques
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<h2 id="offres" class="section-title">Offres disponibles</h2>
+
+<div class="offres-container">
+    {% if offres %}
+        {% for offre in offres %}
+            <article class="offre-card">
+
+                <a href="{% url 'store:detail_offre' offre.slug %}" class="offre-image-link">
+                    {% if offre.image %}
+                        <img src="{{ offre.image.url }}" alt="{{ offre.nom }}" class="offre-image" loading="lazy">
+                    {% else %}
+                        <img src="{% static 'image/default-product.jpg' %}" alt="{{ offre.nom }}" class="offre-image" loading="lazy">
+                    {% endif %}
+
+                    <span class="offer-badge">Offre</span>
+                </a>
+
+                <div class="offre-info">
+                    <h3>
+                        <a href="{% url 'store:detail_offre' offre.slug %}">
+                            {{ offre.nom }}
+                        </a>
+                    </h3>
+
+                    {% if offre.description %}
+                        <p class="offre-description">
+                            {{ offre.description|striptags|truncatewords:18 }}
+                        </p>
+                    {% endif %}
+
+                    {% if offre.prix_remise %}
+                        <p class="offre-price">
+                            <strong>{{ offre.prix_remise }} DH</strong>
+                            <del>{{ offre.prix_total }} DH</del>
+                        </p>
+                    {% else %}
+                        <p class="offre-price">
+                            <strong>{{ offre.prix_total }} DH</strong>
+                        </p>
+                    {% endif %}
+
+                    {% if offre.date_expiration %}
+                        <p class="offre-expire">
+                            Expire le {{ offre.date_expiration|date:"d/m/Y H:i" }}
+                        </p>
+                    {% endif %}
+
+                    <a href="{% url 'store:detail_offre' offre.slug %}" class="btn btn-primary offre-details-btn">
+                        Voir les détails
+                    </a>
+                </div>
+
+            </article>
+        {% endfor %}
+    {% else %}
+        <div class="no-offres">
+            <h3>Aucune offre disponible</h3>
+            <p>Aucune offre spéciale n’est disponible pour le moment.</p>
+            <a href="{% url 'store:index' %}" class="btn btn-primary">Retour à la boutique</a>
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}

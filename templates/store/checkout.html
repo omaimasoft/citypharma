@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Finaliser la commande | City Pharma Plus{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/checkout.css' %}">
+
+<section class="checkout-page">
+    <div class="checkout-container">
+
+        <!-- FORMULAIRE CLIENT -->
+        <div class="checkout-form-box">
+
+            <span class="checkout-badge">Commande sécurisée</span>
+            <h1>Finaliser la commande</h1>
+
+            {% if user.is_authenticated %}
+                <p class="checkout-intro">
+                    Bonjour {{ user.username }}, complétez vos informations pour confirmer votre commande.
+                </p>
+            {% else %}
+                <p class="checkout-intro">
+                    Remplissez vos informations pour enregistrer votre commande.
+                </p>
+
+                <div class="login-option">
+                    Vous avez déjà un compte ?
+                    <a href="{% url 'accounts:login' %}?next={% url 'store:checkout' %}">
+                        Connectez-vous ici
+                    </a>
+                </div>
+            {% endif %}
+
+            <div class="checkout-info-box">
+                <h3>Comment votre commande sera traitée ?</h3>
+                <p>
+                    Votre commande sera enregistrée directement sur notre site City Pharma Plus.
+                    Vous pouvez confirmer uniquement via le site, ou envoyer les détails aussi sur WhatsApp
+                    pour accélérer le traitement.
+                </p>
+            </div>
+
+            <form method="POST" action="" class="checkout-form">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="full_name">Nom complet <span>*</span></label>
+                    <input
+                        type="text"
+                        id="full_name"
+                        name="full_name"
+                        value="{% if user.is_authenticated %}{{ user.get_full_name|default:user.username }}{% endif %}"
+                        placeholder="Votre nom complet"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Téléphone <span>*</span></label>
+                    <input
+                        type="text"
+                        id="phone"
+                        name="phone"
+                        value="{% if user.is_authenticated %}{{ user.client_profile.phone }}{% endif %}"
+                        placeholder="Ex: 06 00 00 00 00"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value="{% if user.is_authenticated %}{{ user.email }}{% endif %}"
+                        placeholder="Votre email"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="address">Adresse de livraison <span>*</span></label>
+                    <textarea
+                        id="address"
+                        name="address"
+                        rows="4"
+                        placeholder="Votre adresse complète"
+                        required
+                    ></textarea>
+                </div>
+
+                <div class="order-note-box">
+                    <strong>Important :</strong>
+                    dans les deux cas, votre commande sera bien enregistrée dans notre système.
+                </div>
+
+                <div class="checkout-buttons">
+                    <button
+                        type="submit"
+                        name="order_action"
+                        value="site"
+                        class="confirm-btn site-btn"
+                    >
+                        Confirmer la commande sur le site
+                    </button>
+
+                    <button
+                        type="submit"
+                        name="order_action"
+                        value="whatsapp"
+                        class="confirm-btn whatsapp-btn"
+                    >
+                        Enregistrer et envoyer via WhatsApp
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- RESUME COMMANDE -->
+        <aside class="checkout-summary">
+            <h2>Résumé du panier</h2>
+
+            {% if cart_items %}
+                <div class="summary-items">
+                    {% for item in cart_items %}
+                        <div class="summary-item">
+                            <div>
+                                <strong>
+                                    {% if item.offre %}
+                                        {{ item.offre.nom }}
+                                    {% elif item.product %}
+                                        {{ item.product.nom }}
+                                    {% endif %}
+                                </strong>
+
+                                <span>Quantité : {{ item.quantity }}</span>
+                            </div>
+
+                            <b>{{ item.get_price }} DH</b>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>Votre panier est vide.</p>
+            {% endif %}
+
+            <div class="summary-divider"></div>
+
+            <div class="summary-line">
+                <span>Montant</span>
+                <strong>{{ total }} DH</strong>
+            </div>
+
+            <div class="summary-line">
+                <span>Livraison</span>
+                <strong>{{ shipping_cost }} DH</strong>
+            </div>
+
+            <div class="summary-line summary-total">
+                <span>Total TTC</span>
+                <strong>{{ total_with_shipping }} DH</strong>
+            </div>
+
+            <a href="{% url 'store:cart' %}" class="back-cart">
+                ← Retour au panier
+            </a>
+
+            <div class="checkout-benefits">
+                <p>✓ Paiement à la livraison</p>
+                <p>✓ Livraison rapide</p>
+                <p>✓ Confirmation par téléphone si nécessaire</p>
+            </div>
+        </aside>
+
+    </div>
+</section>
+{% endblock %}

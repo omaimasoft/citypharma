@@ -1,0 +1,122 @@
+   *{
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-family: 'georgia',serif;
+
+}
+
+/* clase nave bare 500dh*/
+.nav-bar{
+font-size: 16px;    
+color: #fefcfc;
+position: fixed;
+top: 0;
+left: 0;
+width:100%;
+height: 30px;
+padding: 7px 470px  10px;
+background:#29968d;
+display: flex;
+} 
+
+/**/
+      ul{
+        list-style:none;
+        display: inline;
+        text-decoration: none;
+        position: relative;
+        background:transparent;
+        display: flex;
+        justify-content: center;
+        padding: 10px;
+        }
+        li{
+        font-size: 10px;
+        color: #031919;
+        margin-top: 80px;
+        }
+        ul li a {
+        display: block;
+        padding: 20px 15px;
+        color: #4b4b4b;
+        text-align: center;
+        font-size: 15px;
+        text-decoration: none;
+        } 
+        ul li{
+        display: inline-block;
+        position: relative;
+        }    
+        ul li  ul.droawn{
+        width: 100%;
+        background: #aaaaae;           
+        position: absolute;
+        display: none;
+        }   
+        ul li ul.droawn li{
+        display: block;
+        } 
+        .droawn  li a{
+        color: rgb(6, 37, 30);
+        margin-top: -90px;
+        padding: 25px;
+        }
+        ul li a:hover{
+        color: #25847c;
+        display: block;
+        
+        }
+        ul li:hover ul.droawn{
+        display: block;
+        }     
+        li a::after{          /*سطر تحت الكلمات*/
+        content: '';
+        position:absolute;
+        left: 0;
+        bottom: -6px;
+        width: 100%;
+        top: 66px;
+        height:3px;
+        background: #139283;
+        border-radius: 5px;
+        transform:scaleX(0)
+        
+        }
+        li a:hover::after{        /*تحريك*/
+        transform:scaleX(1)
+        }
+        .droawn { 
+        position: relative;
+        background:transparent;
+        display: flex;
+        justify-content: center;
+        top: 70px;   
+        }        
+        #lest a:hover::after{        /*تحريك*/
+        transform:scaleX(1)
+        }
+        .IMA img{
+        position: absolute;
+        height: 100px;
+        top: 44px;
+        width: 110px;
+        }
+        .sherr img{
+        position: absolute;
+        top: 24%;
+        right: 8.105rem;
+        cursor: pointer;
+        width: 24px;
+        height: 24px;        
+        }
+      .logo img{
+    position: absolute;
+    height: 80px;
+    top: 30px;
+    left: 10px;
+    width: 130px;
+    display: flex;
+}
+
+
