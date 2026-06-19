@@ -1213,3 +1213,24 @@ a {
         font-size: 11.5px;
     }
 }
+
+/* =========================================================
+   PRODUCT IMAGES - WHITE BACKGROUND FIX
+========================================================= */
+
+.main-image-box,
+.related-image-box,
+.thumb-item {
+    background: #ffffff !important;
+}
+
+.main-image-box {
+    border: 1px solid #e5eeee;
+}
+
+.main-image,
+.related-image-box img,
+.thumb-item img {
+    background: transparent !important;
+    object-fit: contain;
+}

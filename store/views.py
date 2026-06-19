@@ -671,7 +671,7 @@ def checkout(request):
         message += "===== COMMANDE =====\n"
         message += f"Commande N° : {order.id}\n"
         message += f"Nom du client : {full_name}\n"
-        message += f"Téléphone : {phone}\n"
+        message += f"Telephone : {phone}\n"
         message += f"Adresse : {address}\n"
 
         if email:
@@ -705,7 +705,7 @@ def checkout(request):
             order.save(update_fields=["sent_to_whatsapp"])
 
             encoded_message = quote(message)
-            phone_whatsapp = "212655595926"
+            phone_whatsapp = "212661440367"
             whatsapp_link = f"https://wa.me/{phone_whatsapp}?text={encoded_message}"
             return redirect(whatsapp_link)
 
@@ -807,7 +807,7 @@ def generate_order_receipt_image(order):
     draw.text((padding, y), f"Client : {order.full_name}", fill="#222222", font=normal_font)
     y += line_height
 
-    draw.text((padding, y), f"Téléphone : {order.phone}", fill="#222222", font=normal_font)
+    draw.text((padding, y), f"Telephone : {order.phone}", fill="#222222", font=normal_font)
     y += line_height
 
     if order.email:
