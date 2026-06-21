@@ -2,6 +2,7 @@ from django.contrib import admin, messages
 from django.utils.html import format_html
 from .models import Product, Categorie, SousCategorie, StockMovement
 
+
 from .models import (
     Categorie,
     SousCategorie,
@@ -968,3 +969,62 @@ class StockMovementAdmin(admin.ModelAdmin):
 
     ordering = ("-created_at",)
     list_per_page = 30
+    
+    
+# ============================================================
+# ADMIN CUSTOM STOCK LINKS
+# ============================================================
+
+_original_get_app_list = admin.site.get_app_list
+
+def custom_get_app_list(request, app_label=None):
+    app_list = _original_get_app_list(request, app_label)
+
+    stock_links = [
+        {
+            "name": "Tableau de Stock",
+            "object_name": "StockDashboardLink",
+            "perms": {"view": True, "add": False, "change": False, "delete": False},
+            "admin_url": "/store/stock-dashboard/",
+            "add_url": None,
+            "view_only": True,
+        },
+        {
+            "name": "Scanner Stock",
+            "object_name": "ScannerStockLink",
+            "perms": {"view": True, "add": False, "change": False, "delete": False},
+            "admin_url": "/store/scanner-stock/",
+            "add_url": None,
+            "view_only": True,
+        },
+        {
+            "name": "Historique Stock",
+            "object_name": "StockHistoryLink",
+            "perms": {"view": True, "add": False, "change": False, "delete": False},
+            "admin_url": "/store/stock/movements/",
+            "add_url": None,
+            "view_only": True,
+        },
+        {
+            "name": "Export Stock Excel",
+            "object_name": "StockExportLink",
+            "perms": {"view": True, "add": False, "change": False, "delete": False},
+            "admin_url": "/store/stock/export-excel/",
+            "add_url": None,
+            "view_only": True,
+        },
+    ]
+
+    for app in app_list:
+        if app["app_label"] == "store":
+            existing_names = [model["name"] for model in app["models"]]
+
+            for link in reversed(stock_links):
+                if link["name"] not in existing_names:
+                    app["models"].insert(0, link)
+
+            break
+
+    return app_list
+
+admin.site.get_app_list = custom_get_app_list    

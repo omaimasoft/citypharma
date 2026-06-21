@@ -21,6 +21,8 @@ urlpatterns = [
     path("accounts/", include("accounts.urls")),
 
     path("marques/", include(("marque.urls", "marque"), namespace="marque")),
+    
+    
 ]
 
 

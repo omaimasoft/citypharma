@@ -4,6 +4,9 @@ from io import BytesIO
 from textwrap import wrap
 from urllib.parse import quote
 
+from django.contrib.admin.views.decorators import staff_member_required
+
+
 from django.contrib import messages
 from django.core.files.base import ContentFile
 from django.core.paginator import Paginator
@@ -1086,6 +1089,7 @@ def search_products(request):
 # STOCK / SCANNER / DASHBOARD
 # ============================================================
 
+@staff_member_required
 def scanner_stock(request):
     product = None
     barcode = ""
@@ -1240,6 +1244,7 @@ def get_filtered_stock_products(request):
     }
 
 
+@staff_member_required
 def stock_dashboard(request):
     products_list, filters = get_filtered_stock_products(request)
 
@@ -1291,7 +1296,8 @@ def stock_dashboard(request):
     })
 
 
-def export_stock_excel(request):
+@staff_member_required
+def export_stock_excel(request):  
     products, filters = get_filtered_stock_products(request)
 
     total_products = len(products)
@@ -1400,6 +1406,7 @@ def export_stock_excel(request):
     return response
 
 
+@staff_member_required
 def stock_movements(request):
     movements = (
         StockMovement.objects
