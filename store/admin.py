@@ -1,5 +1,6 @@
 from django.contrib import admin, messages
 from django.utils.html import format_html
+from .models import Product, Categorie, SousCategorie, StockMovement
 
 from .models import (
     Categorie,
@@ -197,7 +198,10 @@ class ProductAdmin(admin.ModelAdmin):
         "marque_styled",
         "prix_styled",
         "prix_remise_styled",
+        "prix_achat",
+        "barcode",
         "stock_styled",
+        "stock_min",
         "show_on_home",
         "home_order",
         "active",
@@ -226,6 +230,7 @@ class ProductAdmin(admin.ModelAdmin):
         "nom",
         "description",
         "slug",
+        "barcode",
         "categorie__nom",
         "sous_categorie__nom",
         "marque__nom",
@@ -277,9 +282,12 @@ class ProductAdmin(admin.ModelAdmin):
         }),
         ("Prix et stock", {
             "fields": (
+                "barcode",
+                "prix_achat",
                 "prix",
                 "prix_remise",
                 "stock",
+                "stock_min",
             )
         }),
         ("Image principale", {
@@ -289,7 +297,6 @@ class ProductAdmin(admin.ModelAdmin):
             )
         }),
     )
-
     @admin.display(description="Image")
     def image_tag(self, obj):
         if obj.image:
@@ -917,3 +924,47 @@ class AvisClientAdmin(admin.ModelAdmin):
 admin.site.site_header = "City Pharma Plus Administration"
 admin.site.site_title = "City Pharma Plus Admin"
 admin.site.index_title = "Gestion des produits, catégories et commandes"
+
+
+# ============================================================
+# التخزين
+# ============================================================
+
+@admin.register(StockMovement)
+class StockMovementAdmin(admin.ModelAdmin):
+    list_display = (
+        "product",
+        "movement_type",
+        "quantity",
+        "old_stock",
+        "new_stock",
+        "created_by",
+        "created_at",
+    )
+
+    list_filter = (
+        "movement_type",
+        "created_at",
+        "product__marque",
+        "product__categorie",
+    )
+
+    search_fields = (
+        "product__nom",
+        "product__barcode",
+        "note",
+    )
+
+    readonly_fields = (
+        "product",
+        "movement_type",
+        "quantity",
+        "old_stock",
+        "new_stock",
+        "created_by",
+        "created_at",
+        "note",
+    )
+
+    ordering = ("-created_at",)
+    list_per_page = 30

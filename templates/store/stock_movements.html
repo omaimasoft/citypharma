@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Historique Stock</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7f6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1150px;
+            margin: 35px auto;
+            background: #fff;
+            padding: 28px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            color: #00796b;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .top-links {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .top-links a {
+            background: #00796b;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .top-links a:hover {
+            background: #005f54;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+            font-size: 14px;
+        }
+
+        th {
+            background: #00796b;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 11px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:hover {
+            background: #f7f7f7;
+        }
+
+        .add {
+            color: #00796b;
+            font-weight: bold;
+        }
+
+        .remove {
+            color: #c62828;
+            font-weight: bold;
+        }
+
+        .adjust {
+            color: #ef6c00;
+            font-weight: bold;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 25px;
+            color: #777;
+        }
+
+        .stock-change {
+            font-weight: bold;
+        }
+
+        @media (max-width: 800px) {
+            .container {
+                margin: 15px;
+                padding: 18px;
+            }
+
+            table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="top-links">
+        <a href="/store/scanner-stock/">Scanner Stock</a>
+        <a href="/store/stock-dashboard/">Tableau Stock</a>
+        <a href="/store/stock/export-excel/">Export Excel</a>
+        <a href="/admin/">Admin</a>
+    </div>
+
+    <h1>Historique des mouvements de stock</h1>
+    <p class="subtitle">
+        هنا كيبانو جميع العمليات ديال زيادة أو نقصان السطوك بالسكان.
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Produit</th>
+                <th>Marque</th>
+                <th>Type</th>
+                <th>Quantité</th>
+                <th>Ancien stock</th>
+                <th>Nouveau stock</th>
+                <th>Utilisateur</th>
+                <th>Note</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for movement in movements %}
+                <tr>
+                    <td>{{ movement.created_at|date:"d/m/Y H:i" }}</td>
+
+                    <td>{{ movement.product.nom }}</td>
+
+                    <td>
+                        {% if movement.product.marque %}
+                            {{ movement.product.marque.nom }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if movement.movement_type == "add" %}
+                            <span class="add">Ajout</span>
+                        {% elif movement.movement_type == "remove" %}
+                            <span class="remove">Retrait</span>
+                        {% elif movement.movement_type == "adjust" %}
+                            <span class="adjust">Ajustement</span>
+                        {% else %}
+                            {{ movement.get_movement_type_display }}
+                        {% endif %}
+                    </td>
+
+                    <td>{{ movement.quantity }}</td>
+
+                    <td>{{ movement.old_stock }}</td>
+
+                    <td class="stock-change">
+                        {{ movement.new_stock }}
+                    </td>
+
+                    <td>
+                        {% if movement.created_by %}
+                            {{ movement.created_by.username }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+
+                    <td>{{ movement.note }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="9" class="empty">
+                        ما كاين حتى mouvement دابا. جربي ديري +1 أو -1 من صفحة Scanner Stock.
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+</body>
+</html>

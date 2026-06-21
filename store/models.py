@@ -29,7 +29,6 @@ class Categorie(models.Model):
     image = models.ImageField(upload_to='categories/', blank=True, null=True)
     ordre = models.PositiveIntegerField(default=0)
     active = models.BooleanField(default=True)
-   
 
     class Meta:
         ordering = ['ordre', 'nom']
@@ -39,6 +38,7 @@ class Categorie(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = unique_slugify(self, self.nom)
+
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -65,6 +65,7 @@ class SousCategorie(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = unique_slugify(self, self.nom)
+
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
@@ -77,8 +78,30 @@ class SousCategorie(models.Model):
 class Product(models.Model):
     nom = models.CharField(max_length=100)
     description = models.TextField()
+
     prix = models.DecimalField(max_digits=10, decimal_places=2)
-    prix_remise = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    prix_remise = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True
+    )
+
+    barcode = models.CharField(
+        max_length=100,
+        unique=True,
+        null=True,
+        blank=True,
+        db_index=True,
+        verbose_name="Code-barres"
+    )
+
+    prix_achat = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0,
+        verbose_name="Prix d'achat"
+    )
 
     categorie = models.ForeignKey(
         Categorie,
@@ -97,6 +120,12 @@ class Product(models.Model):
     )
 
     stock = models.PositiveIntegerField(default=0)
+
+    stock_min = models.PositiveIntegerField(
+        default=2,
+        verbose_name="Stock minimum"
+    )
+
     image = models.ImageField(upload_to='products_img/', blank=True, null=True)
 
     marque = models.ForeignKey(
@@ -108,7 +137,7 @@ class Product(models.Model):
     slug = models.SlugField(unique=True, blank=True)
     active = models.BooleanField(default=True)
     show_on_home = models.BooleanField(default=False)
-    home_order = models.PositiveIntegerField(default=0) 
+    home_order = models.PositiveIntegerField(default=0)
 
     class Meta:
         ordering = ['-id']
@@ -116,6 +145,14 @@ class Product(models.Model):
         verbose_name_plural = "Produits"
 
     def clean(self):
+        super().clean()
+
+        # تنظيف barcode قبل validation
+        if self.barcode:
+            self.barcode = self.barcode.strip()
+        else:
+            self.barcode = None
+
         if self.sous_categorie and self.categorie:
             if self.sous_categorie.parent_id != self.categorie_id:
                 raise ValidationError({
@@ -179,7 +216,25 @@ class Product(models.Model):
 
         return 0
 
+    def valeur_stock_achat(self):
+        return self.prix_achat * self.stock
+
+    def valeur_stock_vente(self):
+        return self.get_price() * self.stock
+
+    def benefice_potentiel(self):
+        return self.valeur_stock_vente() - self.valeur_stock_achat()
+
+    def is_low_stock(self):
+        return self.stock <= self.stock_min
+
     def save(self, *args, **kwargs):
+        # تنظيف barcode قبل الحفظ
+        if self.barcode:
+            self.barcode = self.barcode.strip()
+        else:
+            self.barcode = None
+
         if not self.slug:
             self.slug = unique_slugify(self, self.nom)
 
@@ -189,8 +244,56 @@ class Product(models.Model):
     def __str__(self):
         return self.nom
 
+
+class StockMovement(models.Model):
+    MOVEMENT_TYPES = [
+        ("add", "Ajout au stock"),
+        ("remove", "Retrait du stock"),
+        ("adjust", "Ajustement"),
+        ("sale", "Vente"),
+    ]
+
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name="stock_movements"
+    )
+
+    movement_type = models.CharField(
+        max_length=20,
+        choices=MOVEMENT_TYPES
+    )
+
+    quantity = models.PositiveIntegerField(default=1)
+
+    old_stock = models.PositiveIntegerField(default=0)
+    new_stock = models.PositiveIntegerField(default=0)
+
+    note = models.CharField(max_length=255, blank=True)
+
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = "Mouvement de stock"
+        verbose_name_plural = "Mouvements de stock"
+
+    def __str__(self):
+        return f"{self.product.nom} - {self.get_movement_type_display()} - {self.quantity}"
+
 class ProductImage(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name='images'
+    )
     image = models.ImageField(upload_to='products_img/details/')
     alt_text = models.CharField(max_length=120, blank=True)
 
@@ -217,6 +320,7 @@ class OffreSpeciale(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = unique_slugify(self, self.nom)
+
         super().save(*args, **kwargs)
 
     def est_active(self):
@@ -224,8 +328,6 @@ class OffreSpeciale(models.Model):
 
     def __str__(self):
         return self.nom
-
-
 
 
 class Promotion(models.Model):
@@ -249,6 +351,7 @@ class Promotion(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = unique_slugify(self, self.title)
+
         super().save(*args, **kwargs)
 
     def is_active_now(self):
@@ -303,9 +406,10 @@ class PromotionItem(models.Model):
             return self.promo_price
 
         return self.product.get_price()
+
     def __str__(self):
         return f"{self.product.nom} - {self.promo_price} DH"
-    
+
 
 class Cart(models.Model):
     user = models.OneToOneField(
@@ -325,11 +429,13 @@ class Cart(models.Model):
     def __str__(self):
         if self.user:
             return f"Cart of {self.user.username} - Ordered: {self.is_ordered}"
+
         return f"Guest Cart {self.session_key} - Ordered: {self.is_ordered}"
 
     @property
     def total_price(self):
         return sum(item.get_price() for item in self.store_items.all())
+
 
 class CartItem(models.Model):
     cart = models.ForeignKey(
@@ -378,6 +484,7 @@ class CartItem(models.Model):
             return f"{self.quantity} x {self.offre.nom}"
 
         return "CartItem"
+
 
 class CustomerOrder(models.Model):
     STATUS_CHOICES = [
@@ -491,6 +598,7 @@ class CustomerOrder(models.Model):
         elif should_restore_stock:
             self._restore_stock()
 
+
 class CustomerOrderItem(models.Model):
     order = models.ForeignKey(
         CustomerOrder,
@@ -537,7 +645,3 @@ class AvisClient(models.Model):
 
     def __str__(self):
         return f"Avis de {self.user} sur {self.produit.nom}"
-    
-    
-    
-    

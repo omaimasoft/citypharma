@@ -6,14 +6,18 @@ app_name = 'store'
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path("scanner-stock/", views.scanner_stock, name="scanner_stock"),
+    path("stock-dashboard/", views.stock_dashboard, name="stock_dashboard"),
+    path("stock/export-excel/", views.export_stock_excel, name="export_stock_excel"),
+    path("stock/movements/", views.stock_movements, name="stock_movements"),
 
     # Cart
-path('cart/', views.cart, name='cart'),
-path('cart/delete/', views.delete_cart, name='delete_cart'),
-path('cart/send/', views.checkout, name='passe_order'),
-path('cart/remove/<int:item_id>/', views.remove_item, name='remove_item'),
-path('cart/update/<int:item_id>/', views.update_quantity, name='update_quantity'),
-path('cart/update-ajax/<int:item_id>/', views.update_quantity_ajax, name='update_quantity_ajax'),
+    path('cart/', views.cart, name='cart'),
+    path('cart/delete/', views.delete_cart, name='delete_cart'),
+    path('cart/send/', views.checkout, name='passe_order'),
+    path('cart/remove/<int:item_id>/', views.remove_item, name='remove_item'),
+    path('cart/update/<int:item_id>/', views.update_quantity, name='update_quantity'),
+    path('cart/update-ajax/<int:item_id>/', views.update_quantity_ajax, name='update_quantity_ajax'),
     # Search
     path('search/', views.search_products, name='search_products'),
 

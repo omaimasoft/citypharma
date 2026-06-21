@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Scanner Stock</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00796b;
+            --primary-dark: #005f54;
+            --danger: #c62828;
+            --danger-dark: #a61f1f;
+            --bg: #eef7f5;
+            --card: #ffffff;
+            --text: #111827;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --soft: #f9fafb;
+            --primary-soft: #e0f2f1;
+            --warning-bg: #fff8e1;
+            --warning-border: #ffe082;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(0,121,107,0.10), transparent 35%),
+                linear-gradient(135deg, #eef7f5, #f8fbfa);
+            margin: 0;
+            padding: 0;
+            color: var(--text);
+        }
+
+        .page {
+            max-width: 1180px;
+            margin: 34px auto;
+            padding: 0 18px 40px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 22px;
+            flex-wrap: wrap;
+        }
+
+        .brand h1 {
+            margin: 0;
+            color: var(--primary);
+            font-size: 32px;
+            letter-spacing: -0.5px;
+        }
+
+        .brand p {
+            margin: 8px 0 0;
+            color: var(--muted);
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a,
+        .btn {
+            text-decoration: none;
+            border: none;
+            border-radius: 12px;
+            padding: 13px 18px;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 700;
+            color: white;
+            white-space: nowrap;
+            display: inline-block;
+            text-align: center;
+            transition: 0.2s ease;
+        }
+
+        .nav-links a {
+            background: var(--primary);
+        }
+
+        .nav-links a:hover,
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+        }
+
+        .btn-danger:hover {
+            background: var(--danger-dark);
+            transform: translateY(-1px);
+        }
+
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 22px;
+            margin-bottom: 22px;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 22px;
+            padding: 26px;
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+            border: 1px solid rgba(229, 231, 235, 0.7);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+
+        .icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: var(--primary-soft);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 27px;
+            flex: 0 0 auto;
+        }
+
+        .card-header h2 {
+            margin: 0;
+            font-size: 22px;
+            color: var(--text);
+        }
+
+        .card-header p {
+            margin: 6px 0 0;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 12px;
+            align-items: end;
+        }
+
+        label {
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 8px;
+            display: block;
+            font-size: 14px;
+        }
+
+        .input {
+            width: 100%;
+            padding: 16px;
+            font-size: 18px;
+            border: 2px solid #d1d5db;
+            border-radius: 14px;
+            outline: none;
+            background: #fbfbfb;
+            transition: 0.2s ease;
+        }
+
+        .input:focus {
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(0,121,107,0.10);
+        }
+
+        .message {
+            margin-top: 18px;
+            padding: 16px;
+            background: var(--warning-bg);
+            border: 1px solid var(--warning-border);
+            border-radius: 14px;
+            color: #7a5200;
+            font-weight: 700;
+            line-height: 1.6;
+        }
+
+        .unknown-product-box {
+            margin-top: 12px;
+            padding: 13px;
+            background: #fffdf5;
+            border: 1px dashed #fbc02d;
+            border-radius: 12px;
+            color: #5f4300;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .message-actions {
+            margin-top: 14px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .search-results {
+            margin-top: 22px;
+            background: var(--card);
+            border-radius: 22px;
+            padding: 24px;
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+            border: 1px solid rgba(229, 231, 235, 0.7);
+        }
+
+        .search-results h3 {
+            margin: 0 0 16px;
+            color: var(--text);
+            font-size: 20px;
+        }
+
+        .result-item {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 14px;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            margin-bottom: 10px;
+            background: var(--soft);
+        }
+
+        .result-item strong {
+            color: var(--text);
+            font-size: 15px;
+        }
+
+        .result-item span {
+            display: block;
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 5px;
+            line-height: 1.5;
+        }
+
+        .result-item form {
+            margin: 0;
+        }
+
+        .product-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 22px;
+            margin-top: 24px;
+        }
+
+        .product-image-wrap {
+            background: var(--soft);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 18px;
+            text-align: center;
+        }
+
+        .product-img {
+            max-width: 100%;
+            max-height: 230px;
+            object-fit: contain;
+        }
+
+        .no-image {
+            height: 230px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9ca3af;
+            font-weight: 700;
+        }
+
+        .product-title {
+            margin: 18px 0 8px;
+            font-size: 23px;
+            color: var(--text);
+            line-height: 1.3;
+        }
+
+        .barcode-badge {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 8px 11px;
+            background: var(--primary-soft);
+            color: var(--primary);
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 13px;
+            word-break: break-all;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+
+        .info-box {
+            background: var(--soft);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px;
+        }
+
+        .info-box span {
+            display: block;
+            color: var(--muted);
+            font-size: 13px;
+            margin-bottom: 7px;
+        }
+
+        .info-box strong {
+            font-size: 21px;
+            color: var(--text);
+        }
+
+        .stock-ok strong {
+            color: var(--primary);
+        }
+
+        .stock-low strong {
+            color: var(--danger);
+        }
+
+        .totals-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-top: 16px;
+        }
+
+        .total-box {
+            padding: 17px;
+            border-radius: 16px;
+            background: var(--primary-soft);
+            border: 1px solid #b2dfdb;
+        }
+
+        .total-box span {
+            display: block;
+            color: var(--primary);
+            font-weight: 700;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .total-box strong {
+            font-size: 20px;
+            color: var(--text);
+        }
+
+        .profit-box {
+            background: #fff0f0;
+            border-color: #ffcdd2;
+        }
+
+        .profit-box span {
+            color: var(--danger);
+        }
+
+        .actions-card {
+            margin-top: 22px;
+        }
+
+        .actions-card h3 {
+            margin: 0 0 8px;
+            color: var(--text);
+            font-size: 21px;
+        }
+
+        .actions-card p {
+            margin: 0 0 20px;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .action-forms {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .action-form {
+            background: var(--soft);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 18px;
+        }
+
+        .qty-input {
+            width: 100%;
+            padding: 14px;
+            font-size: 18px;
+            border: 1px solid #d1d5db;
+            border-radius: 14px;
+            outline: none;
+            margin-bottom: 12px;
+        }
+
+        .qty-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(0,121,107,0.10);
+        }
+
+        .action-form .btn {
+            width: 100%;
+        }
+
+        .hint {
+            margin-top: 18px;
+            padding: 15px;
+            background: #f3f4f6;
+            border-radius: 14px;
+            color: #4b5563;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .empty-search {
+            margin-top: 18px;
+        }
+
+        @media (max-width: 950px) {
+            .layout-grid,
+            .product-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .details-grid,
+            .totals-grid,
+            .action-forms {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .result-item {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .page {
+                margin: 18px auto;
+                padding: 0 12px 30px;
+            }
+
+            .card,
+            .search-results {
+                padding: 18px;
+                border-radius: 18px;
+            }
+
+            .brand h1 {
+                font-size: 25px;
+            }
+
+            .input {
+                font-size: 16px;
+            }
+
+            .card-header {
+                align-items: flex-start;
+            }
+
+            .icon {
+                width: 48px;
+                height: 48px;
+                font-size: 23px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="page">
+
+    <div class="topbar">
+        <div class="brand">
+            <h1>Scanner Stock</h1>
+            <p>Scannez un produit, consultez son stock et mettez à jour la quantité rapidement.</p>
+        </div>
+
+        <div class="nav-links">
+            <a href="/store/stock-dashboard/">Tableau Stock</a>
+            <a href="/store/stock/movements/">Historique</a>
+            <a href="/store/stock/export-excel/">Export Excel</a>
+            <a href="/admin/">Admin</a>
+        </div>
+    </div>
+
+    <div class="layout-grid">
+
+        <div class="card">
+            <div class="card-header">
+                <div class="icon">▦</div>
+                <div>
+                    <h2>Recherche par code-barres</h2>
+                    <p>Placez le curseur dans le champ puis scannez le code-barres du produit.</p>
+                </div>
+            </div>
+
+            <form method="post" class="form-grid">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="search">
+
+                <div>
+                    <label for="barcodeInput">Code-barres</label>
+                    <input
+                        type="text"
+                        name="barcode"
+                        id="barcodeInput"
+                        class="input"
+                        value="{{ barcode }}"
+                        placeholder="Scannez le code-barres ici..."
+                        autofocus
+                        autocomplete="off"
+                    >
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    Rechercher
+                </button>
+            </form>
+
+            {% if message %}
+                <div class="message">
+                    {{ message }}
+
+                    {% if add_product_url %}
+                        <div class="unknown-product-box">
+                            هذا الباركود مازال ما مسجلش في النظام. يمكنك إضافة المنتج مباشرة من لوحة التحكم، والباركود غادي يتعمر تلقائياً.
+                        </div>
+
+                        <div class="message-actions">
+                            <a href="{{ add_product_url }}" class="btn btn-primary">
+                                Ajouter ce produit
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="icon">⌕</div>
+                <div>
+                    <h2>Recherche rapide</h2>
+                    <p>Si le code-barres ne fonctionne pas, cherchez par nom, marque ou code-barres.</p>
+                </div>
+            </div>
+
+            <form method="get" class="form-grid">
+                <div>
+                    <label for="quickSearch">Nom, marque ou code-barres</label>
+                    <input
+                        type="text"
+                        name="q"
+                        id="quickSearch"
+                        class="input"
+                        value="{{ q }}"
+                        placeholder="Ex: Bioderma, Sensibio, solaire..."
+                        autocomplete="off"
+                    >
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    Rechercher
+                </button>
+            </form>
+        </div>
+
+    </div>
+
+    {% if search_results %}
+        <div class="search-results">
+            <h3>Résultats de recherche</h3>
+
+            {% for item in search_results %}
+                <div class="result-item">
+                    <div>
+                        <strong>{{ item.nom }}</strong>
+                        <span>
+                            Marque:
+                            {% if item.marque %}
+                                {{ item.marque.nom }}
+                            {% else %}
+                                -
+                            {% endif %}
+                            |
+                            Code-barres: {{ item.barcode|default:"-" }}
+                            |
+                            Stock: {{ item.stock }}
+                        </span>
+                    </div>
+
+                    {% if item.barcode %}
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="barcode" value="{{ item.barcode }}">
+                            <input type="hidden" name="action" value="search">
+
+                            <button type="submit" class="btn btn-primary">
+                                Ouvrir
+                            </button>
+                        </form>
+                    {% else %}
+                        <a href="/admin/store/product/{{ item.id }}/change/" class="btn btn-primary">
+                            Ajouter code-barres
+                        </a>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% elif q %}
+        <div class="message empty-search">
+            Aucun produit trouvé avec: {{ q }}
+        </div>
+    {% endif %}
+
+    {% if product %}
+        <div class="product-layout">
+
+            <div class="card">
+                <div class="product-image-wrap">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.nom }}" class="product-img">
+                    {% else %}
+                        <div class="no-image">Aucune image</div>
+                    {% endif %}
+                </div>
+
+                <h2 class="product-title">{{ product.nom }}</h2>
+
+                <span class="barcode-badge">
+                    Code-barres: {{ product.barcode }}
+                </span>
+            </div>
+
+            <div>
+                <div class="card">
+                    <div class="details-grid">
+                        <div class="info-box">
+                            <span>Prix d'achat</span>
+                            <strong>{{ product.prix_achat|floatformat:2 }} DH</strong>
+                        </div>
+
+                        <div class="info-box">
+                            <span>Prix de vente</span>
+                            <strong>{{ product.get_price|floatformat:2 }} DH</strong>
+                        </div>
+
+                        <div class="info-box {% if product.is_low_stock %}stock-low{% else %}stock-ok{% endif %}">
+                            <span>Stock actuel</span>
+                            <strong>{{ product.stock }}</strong>
+                        </div>
+
+                        <div class="info-box">
+                            <span>Stock minimum</span>
+                            <strong>{{ product.stock_min }}</strong>
+                        </div>
+                    </div>
+
+                    <div class="totals-grid">
+                        <div class="total-box">
+                            <span>Valeur stock achat</span>
+                            <strong>{{ product.valeur_stock_achat|floatformat:2 }} DH</strong>
+                        </div>
+
+                        <div class="total-box">
+                            <span>Valeur stock vente</span>
+                            <strong>{{ product.valeur_stock_vente|floatformat:2 }} DH</strong>
+                        </div>
+
+                        <div class="total-box profit-box">
+                            <span>Bénéfice potentiel</span>
+                            <strong>{{ product.benefice_potentiel|floatformat:2 }} DH</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card actions-card">
+                    <h3>Mise à jour du stock</h3>
+                    <p>Entrez la quantité puis choisissez l'opération souhaitée.</p>
+
+                    <div class="action-forms">
+
+                        <form method="post" class="action-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="barcode" value="{{ product.barcode }}">
+                            <input type="hidden" name="action" value="add">
+
+                            <label>Quantité à ajouter</label>
+                            <input
+                                type="number"
+                                name="quantity"
+                                value="1"
+                                min="1"
+                                class="qty-input"
+                            >
+
+                            <button type="submit" class="btn btn-primary">
+                                Ajouter au stock
+                            </button>
+                        </form>
+
+                        <form method="post" class="action-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="barcode" value="{{ product.barcode }}">
+                            <input type="hidden" name="action" value="remove">
+
+                            <label>Quantité à retirer</label>
+                            <input
+                                type="number"
+                                name="quantity"
+                                value="1"
+                                min="1"
+                                class="qty-input"
+                            >
+
+                            <button type="submit" class="btn btn-danger">
+                                Retirer du stock
+                            </button>
+                        </form>
+
+                    </div>
+
+                    <div class="hint">
+                        Exemple: si vous avez trouvé 20 pièces du même produit pendant l'inventaire,
+                        entrez 20 puis cliquez sur “Ajouter au stock”.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    {% endif %}
+
+</div>
+
+<script>
+    window.onload = function () {
+        const input = document.getElementById("barcodeInput");
+
+        if (input) {
+            input.focus();
+            input.select();
+        }
+    };
+</script>
+
+</body>
+</html>

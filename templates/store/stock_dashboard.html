@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Tableau de Stock</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7f6;
+            margin: 0;
+            padding: 0;
+            color: #111827;
+        }
+
+        .container {
+            max-width: 1250px;
+            margin: 35px auto;
+            background: #fff;
+            padding: 28px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            color: #00796b;
+            margin-bottom: 8px;
+            font-size: 32px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .top-links {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .top-links a {
+            background: #00796b;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .top-links a:hover {
+            background: #005f54;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: #e0f2f1;
+            padding: 18px;
+            border-radius: 12px;
+            border: 1px solid #b2dfdb;
+        }
+
+        .card span {
+            display: block;
+            color: #00796b;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .card strong {
+            font-size: 22px;
+            color: #111;
+        }
+
+        .danger {
+            background: #ffebee;
+            border-color: #ffcdd2;
+        }
+
+        .danger span {
+            color: #c62828;
+        }
+
+        .filters-box {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            padding: 18px;
+            border-radius: 14px;
+            margin: 25px 0;
+        }
+
+        .filters-form {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr 1fr 1fr auto auto;
+            gap: 12px;
+            align-items: end;
+        }
+
+        .filters-form label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #374151;
+            font-size: 14px;
+        }
+
+        .filters-form input,
+        .filters-form select {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .filters-form input:focus,
+        .filters-form select:focus {
+            border-color: #00796b;
+        }
+
+        .filters-form button,
+        .filters-form a {
+            background: #00796b;
+            color: white;
+            border: none;
+            padding: 11px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            display: block;
+            white-space: nowrap;
+        }
+
+        .filters-form a {
+            background: #6b7280;
+        }
+
+        .filters-form button:hover {
+            background: #005f54;
+        }
+
+        .filters-form a:hover {
+            background: #4b5563;
+        }
+
+        .section-title {
+            margin-top: 35px;
+            color: #222;
+            font-size: 25px;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            min-width: 1050px;
+        }
+
+        th {
+            background: #00796b;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 11px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+
+        tr:hover {
+            background: #f7f7f7;
+        }
+
+        .low-stock {
+            color: #c62828;
+            font-weight: bold;
+        }
+
+        .ok-stock {
+            color: #00796b;
+            font-weight: bold;
+        }
+
+        .missing {
+            color: #c62828;
+            font-weight: bold;
+        }
+
+        .pagination {
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .pagination a,
+        .pagination span {
+            padding: 9px 13px;
+            border-radius: 8px;
+            text-decoration: none;
+            background: #e0f2f1;
+            color: #00796b;
+            font-weight: bold;
+        }
+
+        .pagination .current {
+            background: #00796b;
+            color: white;
+        }
+
+        .empty-row {
+            text-align: center;
+            padding: 25px;
+            color: #777;
+            font-weight: bold;
+        }
+
+        @media (max-width: 1000px) {
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .filters-form {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                margin: 15px;
+                padding: 18px;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 25px;
+            }
+
+            .top-links a,
+            .filters-form button,
+            .filters-form a {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="top-links">
+        <a href="/store/scanner-stock/">Scanner Stock</a>
+        <a href="/store/stock/export-excel/">Export Excel</a>
+        <a href="/store/stock/movements/">Historique Stock</a>
+        <a href="/admin/store/product/">Produits Admin</a>
+        <a href="/admin/">Admin</a>
+    </div>
+
+    <h1>Tableau de Stock</h1>
+    <p class="subtitle">
+        Résumé de la valeur financière des produits disponibles dans le magasin.
+        يمكنك استعمال البحث والفلاتر باش تلقاي المنتجات بسرعة.
+    </p>
+
+    <div class="cards">
+        <div class="card">
+            <span>Nombre de produits</span>
+            <strong>{{ total_products }}</strong>
+        </div>
+
+        <div class="card">
+            <span>Quantité totale</span>
+            <strong>{{ total_quantity }}</strong>
+        </div>
+
+        <div class="card">
+            <span>Valeur achat</span>
+            <strong>{{ total_stock_achat|floatformat:2 }} DH</strong>
+        </div>
+
+        <div class="card">
+            <span>Valeur vente</span>
+            <strong>{{ total_stock_vente|floatformat:2 }} DH</strong>
+        </div>
+
+        <div class="card danger">
+            <span>Bénéfice potentiel</span>
+            <strong>{{ total_benefice|floatformat:2 }} DH</strong>
+        </div>
+    </div>
+
+    <div class="filters-box">
+        <form method="get" class="filters-form">
+
+            <div>
+                <label>Recherche</label>
+                <input
+                    type="text"
+                    name="q"
+                    value="{{ q }}"
+                    placeholder="Nom, marque, code-barres..."
+                >
+            </div>
+
+            <div>
+                <label>Marque</label>
+                <select name="marque">
+                    <option value="">Toutes les marques</option>
+                    {% for marque in marques %}
+                        <option value="{{ marque.id }}" {% if selected_marque == marque.id|stringformat:"s" %}selected{% endif %}>
+                            {{ marque.nom }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label>Catégorie</label>
+                <select name="categorie">
+                    <option value="">Toutes les catégories</option>
+                    {% for categorie in categories %}
+                        <option value="{{ categorie.id }}" {% if selected_categorie == categorie.id|stringformat:"s" %}selected{% endif %}>
+                            {{ categorie.nom }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label>État</label>
+                <select name="stock_status">
+                    <option value="">Tous les produits</option>
+                    <option value="low" {% if selected_stock_status == "low" %}selected{% endif %}>
+                        Stock faible
+                    </option>
+                    <option value="ok" {% if selected_stock_status == "ok" %}selected{% endif %}>
+                        Stock OK
+                    </option>
+                    <option value="missing_barcode" {% if selected_stock_status == "missing_barcode" %}selected{% endif %}>
+                        Sans code-barres
+                    </option>
+                    <option value="missing_purchase_price" {% if selected_stock_status == "missing_purchase_price" %}selected{% endif %}>
+                        Sans prix d'achat
+                    </option>
+                </select>
+            </div>
+
+            <div>
+                <label>&nbsp;</label>
+                <button type="submit">Filtrer</button>
+            </div>
+
+            <div>
+                <label>&nbsp;</label>
+                <a href="/store/stock-dashboard/">Réinitialiser</a>
+            </div>
+
+        </form>
+    </div>
+
+    <h2 class="section-title">Produits en stock</h2>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Produit</th>
+                    <th>Marque</th>
+                    <th>Code-barres</th>
+                    <th>Prix achat</th>
+                    <th>Prix vente</th>
+                    <th>Stock</th>
+                    <th>Stock min</th>
+                    <th>Valeur achat</th>
+                    <th>Valeur vente</th>
+                    <th>Bénéfice</th>
+                    <th>État</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for product in products %}
+                    <tr>
+                        <td>{{ product.nom }}</td>
+
+                        <td>
+                            {% if product.marque %}
+                                {{ product.marque.nom }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if product.barcode %}
+                                {{ product.barcode }}
+                            {% else %}
+                                <span class="missing">Sans code</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if product.prix_achat == 0 %}
+                                <span class="missing">0,00 DH</span>
+                            {% else %}
+                                {{ product.prix_achat|floatformat:2 }} DH
+                            {% endif %}
+                        </td>
+
+                        <td>{{ product.get_price|floatformat:2 }} DH</td>
+                        <td>{{ product.stock }}</td>
+                        <td>{{ product.stock_min }}</td>
+                        <td>{{ product.valeur_stock_achat|floatformat:2 }} DH</td>
+                        <td>{{ product.valeur_stock_vente|floatformat:2 }} DH</td>
+                        <td>{{ product.benefice_potentiel|floatformat:2 }} DH</td>
+
+                        <td>
+                            {% if product.is_low_stock %}
+                                <span class="low-stock">Stock faible</span>
+                            {% else %}
+                                <span class="ok-stock">OK</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="11" class="empty-row">
+                            Aucun produit trouvé.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if page_obj.has_other_pages %}
+        <div class="pagination">
+
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}&q={{ q|urlencode }}&marque={{ selected_marque }}&categorie={{ selected_categorie }}&stock_status={{ selected_stock_status }}">
+                    Précédent
+                </a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}&q={{ q|urlencode }}&marque={{ selected_marque }}&categorie={{ selected_categorie }}&stock_status={{ selected_stock_status }}">
+                    Suivant
+                </a>
+            {% endif %}
+
+        </div>
+    {% endif %}
+
+    <h2 class="section-title">Produits proches de rupture</h2>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Produit</th>
+                    <th>Marque</th>
+                    <th>Stock actuel</th>
+                    <th>Stock minimum</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for product in low_stock_products %}
+                    <tr>
+                        <td>{{ product.nom }}</td>
+
+                        <td>
+                            {% if product.marque %}
+                                {{ product.marque.nom }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+
+                        <td class="low-stock">{{ product.stock }}</td>
+                        <td>{{ product.stock_min }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4" class="empty-row">
+                            Aucun produit proche de rupture.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>

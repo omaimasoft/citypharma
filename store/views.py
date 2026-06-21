@@ -8,11 +8,15 @@ from django.contrib import messages
 from django.core.files.base import ContentFile
 from django.core.paginator import Paginator
 from django.db.models import Count, Prefetch, Q
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.http import require_POST
+
+from openpyxl import Workbook
+from openpyxl.styles import Font, PatternFill, Alignment
+from openpyxl.utils import get_column_letter
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -29,9 +33,8 @@ from .models import (
     AvisClient,
     CustomerOrder,
     CustomerOrderItem,
+    StockMovement,
 )
-
-
 # ============================================================
 # PAGINATION HELPER
 # ============================================================
@@ -1076,4 +1079,334 @@ def search_products(request):
         "page_obj": produits,
         "pagination_query": pagination_query,
         "total_results": produits_queryset.count(),
+    })
+
+
+# ============================================================
+# STOCK / SCANNER / DASHBOARD
+# ============================================================
+
+def scanner_stock(request):
+    product = None
+    barcode = ""
+    message = ""
+    add_product_url = ""
+    q = request.GET.get("q", "").strip()
+    search_results = []
+
+    # Recherche rapide par nom / marque / code-barres
+    if q:
+        search_results = (
+            Product.objects
+            .filter(
+                Q(nom__icontains=q) |
+                Q(barcode__icontains=q) |
+                Q(marque__nom__icontains=q)
+            )
+            .select_related("marque", "categorie")
+            .order_by("nom")[:20]
+        )
+
+    if request.method == "POST":
+        barcode = request.POST.get("barcode", "").strip()
+        action = request.POST.get("action", "search")
+
+        try:
+            quantity = int(request.POST.get("quantity", 1))
+            if quantity < 1:
+                quantity = 1
+        except ValueError:
+            quantity = 1
+
+        if barcode:
+            product = Product.objects.filter(barcode=barcode).first()
+
+            if product:
+                if action == "add":
+                    old_stock = product.stock
+
+                    product.stock += quantity
+                    product.save(update_fields=["stock"])
+
+                    new_stock = product.stock
+
+                    StockMovement.objects.create(
+                        product=product,
+                        movement_type="add",
+                        quantity=quantity,
+                        old_stock=old_stock,
+                        new_stock=new_stock,
+                        note=f"Ajout de {quantity} depuis scanner",
+                        created_by=request.user if request.user.is_authenticated else None,
+                    )
+
+                    message = f"تمت زيادة {quantity} للمنتج: {product.nom}"
+
+                elif action == "remove":
+                    if product.stock >= quantity:
+                        old_stock = product.stock
+
+                        product.stock -= quantity
+                        product.save(update_fields=["stock"])
+
+                        new_stock = product.stock
+
+                        StockMovement.objects.create(
+                            product=product,
+                            movement_type="remove",
+                            quantity=quantity,
+                            old_stock=old_stock,
+                            new_stock=new_stock,
+                            note=f"Retrait de {quantity} depuis scanner",
+                            created_by=request.user if request.user.is_authenticated else None,
+                        )
+
+                        message = f"تم إنقاص {quantity} من المنتج: {product.nom}"
+                    else:
+                        message = f"لا يمكن إنقاص {quantity}. الكمية المتوفرة فقط هي {product.stock}."
+
+            else:
+                message = "هذا المنتج غير موجود بهذا الكود بار."
+                add_product_url = f"/admin/store/product/add/?barcode={barcode}"
+
+        else:
+            message = "دخلي أو سكانِي الكود بار."
+
+    return render(request, "store/scanner_stock.html", {
+        "product": product,
+        "barcode": barcode,
+        "message": message,
+        "add_product_url": add_product_url,
+        "q": q,
+        "search_results": search_results,
+    })
+
+
+def get_filtered_stock_products(request):
+    q = request.GET.get("q", "").strip()
+    marque_id = request.GET.get("marque", "").strip()
+    categorie_id = request.GET.get("categorie", "").strip()
+    stock_status = request.GET.get("stock_status", "").strip()
+
+    products_qs = (
+        Product.objects
+        .filter(active=True)
+        .select_related("categorie", "sous_categorie", "marque")
+        .order_by("nom")
+    )
+
+    if q:
+        products_qs = products_qs.filter(
+            Q(nom__icontains=q) |
+            Q(barcode__icontains=q) |
+            Q(marque__nom__icontains=q) |
+            Q(categorie__nom__icontains=q) |
+            Q(sous_categorie__nom__icontains=q)
+        )
+
+    if marque_id:
+        products_qs = products_qs.filter(marque_id=marque_id)
+
+    if categorie_id:
+        products_qs = products_qs.filter(categorie_id=categorie_id)
+
+    if stock_status == "missing_barcode":
+        products_qs = products_qs.filter(
+            Q(barcode__isnull=True) | Q(barcode="")
+        )
+
+    elif stock_status == "missing_purchase_price":
+        products_qs = products_qs.filter(prix_achat=0)
+
+    products_list = list(products_qs)
+
+    if stock_status == "low":
+        products_list = [
+            product for product in products_list
+            if product.is_low_stock()
+        ]
+
+    elif stock_status == "ok":
+        products_list = [
+            product for product in products_list
+            if not product.is_low_stock()
+        ]
+
+    return products_list, {
+        "q": q,
+        "marque_id": marque_id,
+        "categorie_id": categorie_id,
+        "stock_status": stock_status,
+    }
+
+
+def stock_dashboard(request):
+    products_list, filters = get_filtered_stock_products(request)
+
+    total_products = len(products_list)
+    total_quantity = sum(product.stock for product in products_list)
+
+    total_stock_achat = sum(
+        (product.valeur_stock_achat() for product in products_list),
+        Decimal("0.00")
+    )
+
+    total_stock_vente = sum(
+        (product.valeur_stock_vente() for product in products_list),
+        Decimal("0.00")
+    )
+
+    total_benefice = total_stock_vente - total_stock_achat
+
+    low_stock_products = [
+        product for product in products_list
+        if product.is_low_stock()
+    ]
+
+    paginator = Paginator(products_list, 20)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    marques = Marque.objects.all().order_by("nom")
+    categories = Categorie.objects.filter(active=True).order_by("ordre", "nom")
+
+    return render(request, "store/stock_dashboard.html", {
+        "products": page_obj,
+        "page_obj": page_obj,
+
+        "total_products": total_products,
+        "total_quantity": total_quantity,
+        "total_stock_achat": total_stock_achat,
+        "total_stock_vente": total_stock_vente,
+        "total_benefice": total_benefice,
+        "low_stock_products": low_stock_products,
+
+        "marques": marques,
+        "categories": categories,
+
+        "q": filters["q"],
+        "selected_marque": filters["marque_id"],
+        "selected_categorie": filters["categorie_id"],
+        "selected_stock_status": filters["stock_status"],
+    })
+
+
+def export_stock_excel(request):
+    products, filters = get_filtered_stock_products(request)
+
+    total_products = len(products)
+    total_quantity = sum(product.stock for product in products)
+
+    total_stock_achat = sum(
+        (product.valeur_stock_achat() for product in products),
+        Decimal("0.00")
+    )
+
+    total_stock_vente = sum(
+        (product.valeur_stock_vente() for product in products),
+        Decimal("0.00")
+    )
+
+    total_benefice = total_stock_vente - total_stock_achat
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Stock"
+
+    ws["A1"] = "Rapport de Stock"
+    ws["A1"].font = Font(size=18, bold=True)
+    ws["A1"].alignment = Alignment(horizontal="center")
+    ws.merge_cells("A1:M1")
+
+    summary_data = [
+        ("Nombre de produits", total_products),
+        ("Quantité totale", total_quantity),
+        ("Valeur achat", float(total_stock_achat)),
+        ("Valeur vente", float(total_stock_vente)),
+        ("Bénéfice potentiel", float(total_benefice)),
+    ]
+
+    row = 3
+    for label, value in summary_data:
+        ws[f"A{row}"] = label
+        ws[f"B{row}"] = value
+        ws[f"A{row}"].font = Font(bold=True)
+        row += 1
+
+    headers = [
+        "Produit",
+        "Catégorie",
+        "Sous-catégorie",
+        "Marque",
+        "Code-barres",
+        "Prix achat",
+        "Prix vente",
+        "Stock",
+        "Stock minimum",
+        "Valeur achat",
+        "Valeur vente",
+        "Bénéfice potentiel",
+        "État",
+    ]
+
+    start_row = 10
+
+    header_fill = PatternFill("solid", fgColor="00796B")
+    header_font = Font(color="FFFFFF", bold=True)
+
+    for col_num, header in enumerate(headers, 1):
+        cell = ws.cell(row=start_row, column=col_num, value=header)
+        cell.fill = header_fill
+        cell.font = header_font
+        cell.alignment = Alignment(horizontal="center")
+
+    for row_num, product in enumerate(products, start_row + 1):
+        prix_vente = product.get_price()
+        valeur_achat = product.valeur_stock_achat()
+        valeur_vente = product.valeur_stock_vente()
+        benefice = product.benefice_potentiel()
+        etat = "Stock faible" if product.is_low_stock() else "OK"
+
+        ws.cell(row=row_num, column=1, value=product.nom)
+        ws.cell(row=row_num, column=2, value=product.categorie.nom if product.categorie else "")
+        ws.cell(row=row_num, column=3, value=product.sous_categorie.nom if product.sous_categorie else "")
+        ws.cell(row=row_num, column=4, value=product.marque.nom if product.marque else "")
+        ws.cell(row=row_num, column=5, value=product.barcode or "")
+        ws.cell(row=row_num, column=6, value=float(product.prix_achat))
+        ws.cell(row=row_num, column=7, value=float(prix_vente))
+        ws.cell(row=row_num, column=8, value=product.stock)
+        ws.cell(row=row_num, column=9, value=product.stock_min)
+        ws.cell(row=row_num, column=10, value=float(valeur_achat))
+        ws.cell(row=row_num, column=11, value=float(valeur_vente))
+        ws.cell(row=row_num, column=12, value=float(benefice))
+        ws.cell(row=row_num, column=13, value=etat)
+
+    for column_cells in ws.columns:
+        max_length = 0
+        column_letter = get_column_letter(column_cells[0].column)
+
+        for cell in column_cells:
+            if cell.value:
+                max_length = max(max_length, len(str(cell.value)))
+
+        ws.column_dimensions[column_letter].width = max_length + 3
+
+    response = HttpResponse(
+        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+    response["Content-Disposition"] = 'attachment; filename="rapport_stock.xlsx"'
+
+    wb.save(response)
+    return response
+
+
+def stock_movements(request):
+    movements = (
+        StockMovement.objects
+        .select_related("product", "product__marque", "created_by")
+        .order_by("-created_at")[:200]
+    )
+
+    return render(request, "store/stock_movements.html", {
+        "movements": movements,
     })
