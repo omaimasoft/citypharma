@@ -81,6 +81,7 @@ else:
 # ============================================================
 
 INSTALLED_APPS = [
+    'django.contrib.sitemaps',
     "marque",
     "core",
     "store",

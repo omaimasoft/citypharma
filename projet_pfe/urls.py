@@ -5,9 +5,28 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 
+from django.contrib.sitemaps.views import sitemap
+from store.sitemaps import (
+    ProductSitemap,
+    CategorieSitemap,
+    SousCategorieSitemap,
+    StaticSitemap,
+)
+
+
+sitemaps = {
+    "products": ProductSitemap,
+    "categories": CategorieSitemap,
+    "subcategories": SousCategorieSitemap,
+    "static": StaticSitemap,
+}
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+
+    # Sitemap for Google
+    path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="sitemap"),
 
     path("contact/", include("contacte.urls")),
 
@@ -21,8 +40,6 @@ urlpatterns = [
     path("accounts/", include("accounts.urls")),
 
     path("marques/", include(("marque.urls", "marque"), namespace="marque")),
-    
-    
 ]
 
 
